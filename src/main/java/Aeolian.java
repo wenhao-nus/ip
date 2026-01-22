@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ public class Aeolian {
         final String GOODBYE_MESSAGE = HORIZONTAL_LINE
                 + " Bye. Hope to see you again soon!\n" + HORIZONTAL_LINE;
 
-        ArrayList<String> listStore = new ArrayList<String>();
+        ArrayList<Task> listStore = new ArrayList<>();
 
         System.out.println(GREETING_MESSAGE);
         String userInput = sc.nextLine();
@@ -21,15 +22,40 @@ public class Aeolian {
         while (!userInput.equals("bye")) {
             if (userInput.equals("list")) {
                 System.out.print(HORIZONTAL_LINE);
+                System.out.println(" Here are the tasks in your list:");
                 for (int i = 0; i < listStore.size(); i++) {
-                    System.out.println(i+1 + ". " + listStore.get(i));
+                    Task currentTask = listStore.get(i);
+                    System.out.println(" " + (i+1) + ".["
+                            + currentTask.getStatusIcon() + "] "
+                            + currentTask.description);
                 }
                 System.out.println(HORIZONTAL_LINE);
 
             } else {
-                listStore.add(userInput);
-                System.out.println(HORIZONTAL_LINE + " added: " + userInput +
-                        '\n' + HORIZONTAL_LINE);
+
+                if (userInput.matches("mark \\d+")) {
+                    String[] tokens = userInput.split(" ");
+                    int taskIndex = Integer.parseInt(tokens[1]) - 1;
+                    Task chosenTask = listStore.get(taskIndex);
+                    chosenTask.markAsDone();
+                    System.out.print(HORIZONTAL_LINE +
+                            " Nice! I've marked this task as done:\n"
+                            + "   [X] " + chosenTask.description +
+                            '\n' + HORIZONTAL_LINE);
+                } else if (userInput.matches("unmark \\d+")) {
+                    String[] tokens = userInput.split(" ");
+                    int taskIndex = Integer.parseInt(tokens[1]) - 1;
+                    Task chosenTask = listStore.get(taskIndex);
+                    chosenTask.unmarkAsDone();
+                    System.out.print(HORIZONTAL_LINE +
+                            " OK, I've marked this task as not done yet:\n"
+                            + "   [ ] " + chosenTask.description +
+                            '\n' + HORIZONTAL_LINE);
+                } else {
+                    listStore.add(new Task(userInput));
+                    System.out.println(HORIZONTAL_LINE + " added: " + userInput +
+                            '\n' + HORIZONTAL_LINE);
+                }
             }
             userInput = sc.nextLine();
         }
