@@ -1,12 +1,12 @@
 public class Aeolian {
     public static void main(String[] args) {
-        String greetings = "____________________________________________________________\n" +
+        String greeting = "____________________________________________________________\n" +
                 " Hello! I'm Aeolian\n" +
                 " What can I do for you?\n" +
                 "____________________________________________________________\n" +
                 " Bye. Hope to see you again soon!\n" +
                 "____________________________________________________________\n";
 
-        System.out.println(greetings);
+        System.out.println(greeting);
     }
 }
