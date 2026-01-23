@@ -14,47 +14,73 @@ public class Aeolian {
         final String GOODBYE_MESSAGE = HORIZONTAL_LINE
                 + " Bye. Hope to see you again soon!\n" + HORIZONTAL_LINE;
 
-        ArrayList<Task> listStore = new ArrayList<>();
+        ArrayList<Task> taskStore = new ArrayList<>();
 
         System.out.println(GREETING_MESSAGE);
         String userInput = sc.nextLine();
 
         while (!userInput.equals("bye")) {
+            System.out.print(HORIZONTAL_LINE);
             if (userInput.equals("list")) {
-                System.out.print(HORIZONTAL_LINE);
                 System.out.println(" Here are the tasks in your list:");
-                for (int i = 0; i < listStore.size(); i++) {
-                    Task currentTask = listStore.get(i);
+                for (int i = 0; i < taskStore.size(); i++) {
+                    Task currentTask = taskStore.get(i);
                     System.out.println(" " + (i+1) + "." + currentTask);
                 }
-                System.out.println(HORIZONTAL_LINE);
-
             } else {
+                if (userInput.startsWith("todo ")) {
+                    String description = userInput.substring(5);
+                    Task newTask = new Todo(description);
+                    taskStore.add(newTask);
+                    System.out.println(" Got it. I've added this task:\n"
+                    + "   " + newTask + "\n" + " Now you have "
+                            + taskStore.size() + " tasks in the list.");
 
-                if (userInput.matches("mark \\d+")) {
+                    
+                } else if (userInput.startsWith("deadline ")) {
+                    int descEndIndex = userInput.indexOf(" /by ");
+                    String description = userInput.substring(9, descEndIndex);
+                    String by = userInput.substring(descEndIndex + 5);
+                    Task newTask = new Deadline(description, by);
+                    taskStore.add(newTask);
+                    System.out.println(" Got it. I've added this task:\n"
+                            + "   " + newTask + "\n" + " Now you have "
+                            + taskStore.size() + " tasks in the list.");
+
+                } else if (userInput.startsWith("event ")) {
+                    int descEndIndex = userInput.indexOf(" /from ");
+                    String description = userInput.substring(6, descEndIndex);
+                    int fromEndIndex = userInput.indexOf(" /to ");
+                    String from = userInput.substring(descEndIndex + 7, fromEndIndex);
+                    String to = userInput.substring(fromEndIndex + 5);
+                    Task newTask = new Event(description, from, to);
+                    taskStore.add(newTask);
+
+                    System.out.println(" Got it. I've added this task:\n"
+                            + "   " + newTask + "\n" + " Now you have "
+                            + taskStore.size() + " tasks in the list.");
+
+
+                } else if (userInput.matches("mark \\d+")) {
                     String[] tokens = userInput.split(" ");
                     int taskIndex = Integer.parseInt(tokens[1]) - 1;
-                    Task chosenTask = listStore.get(taskIndex);
+                    Task chosenTask = taskStore.get(taskIndex);
                     chosenTask.markAsDone();
-                    System.out.print(HORIZONTAL_LINE +
-                            " Nice! I've marked this task as done:\n"
-                            + "   " + chosenTask +
-                            '\n' + HORIZONTAL_LINE);
+                    System.out.println(" Nice! I've marked this task as done:\n"
+                            + "   " + chosenTask);
                 } else if (userInput.matches("unmark \\d+")) {
                     String[] tokens = userInput.split(" ");
                     int taskIndex = Integer.parseInt(tokens[1]) - 1;
-                    Task chosenTask = listStore.get(taskIndex);
+                    Task chosenTask = taskStore.get(taskIndex);
                     chosenTask.unmarkAsDone();
-                    System.out.print(HORIZONTAL_LINE +
-                            " OK, I've marked this task as not done yet:\n"
-                            + "   " + chosenTask +
-                            '\n' + HORIZONTAL_LINE);
+                    System.out.println(" OK, I've marked this task as not done yet:\n"
+                            + "   " + chosenTask);
                 } else {
-                    listStore.add(new Task(userInput));
-                    System.out.println(HORIZONTAL_LINE + " added: " + userInput +
-                            '\n' + HORIZONTAL_LINE);
+                    System.out.println(" I don't understand what you mean.");
                 }
             }
+            System.out.print(HORIZONTAL_LINE);
+
             userInput = sc.nextLine();
         }
 
