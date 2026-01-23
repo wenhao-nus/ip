@@ -16,7 +16,7 @@ public class Aeolian {
 
         ArrayList<Task> taskStore = new ArrayList<>();
 
-        System.out.println(GREETING_MESSAGE);
+        System.out.print(GREETING_MESSAGE);
         String userInput = sc.nextLine();
 
         while (!userInput.equals("bye")) {
