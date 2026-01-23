@@ -8,3 +8,9 @@ list
 unmark 1
 mark 2
 list
+blah
+todo
+delete 1
+list
+delete 2
+list

@@ -34,11 +34,11 @@ public class Aeolian {
                     if (parts[0].equals("todo")) {
 
                         if (parts.length < 2) {
-                            throw new AeolianException("Description of todo cannot be empty!");
+                            throw new AeolianException(" Description of todo cannot be empty!");
                         }
                         String description = parts[1].trim();
                         if (description.isEmpty()) {
-                            throw new AeolianException("Description of todo cannot be empty!");
+                            throw new AeolianException(" Description of todo cannot be empty!");
                         }
 
                         Task newTask = new Todo(description);
@@ -84,8 +84,15 @@ public class Aeolian {
                         chosenTask.unmarkAsDone();
                         System.out.println(" OK, I've marked this task as not done yet:\n"
                                 + "   " + chosenTask);
+                    } else if (userInput.matches("delete \\d+")) {
+                        int indexToDelete = Integer.parseInt(parts[1]) - 1;
+                        Task deletedTask = taskStore.get(indexToDelete);
+                        taskStore.remove(deletedTask);
+                        System.out.println(" Noted. I've removed this task:\n   " + deletedTask + "\n"
+                                + " Now you have "
+                                + taskStore.size() + " tasks in the list.");
                     } else {
-                        throw new AeolianException("I don't understand that command.");
+                        throw new AeolianException(" I don't understand that command.");
                     }
                 } catch (AeolianException e) {
                     System.out.println(e.getMessage());
