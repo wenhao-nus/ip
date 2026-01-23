@@ -1,11 +1,7 @@
 public class Todo extends Task {
 
-    public Todo(String description) throws AeolianException {
+    public Todo(String description) {
         super(description);
-        if (description.isEmpty()) {
-            throw new AeolianException("Description of Todo cannot be empty!");
-        }
-
     }
 
     @Override

@@ -29,16 +29,25 @@ public class Aeolian {
                 }
             } else {
                 try {
-                    if (userInput.startsWith("todo ")) {
-                        String description = userInput.substring(5);
+                    String[] parts = userInput.split(" ", 2);
+
+                    if (parts[0].equals("todo")) {
+
+                        if (parts.length < 2) {
+                            throw new AeolianException("Description of todo cannot be empty!");
+                        }
+                        String description = parts[1].trim();
+                        if (description.isEmpty()) {
+                            throw new AeolianException("Description of todo cannot be empty!");
+                        }
+
                         Task newTask = new Todo(description);
                         taskStore.add(newTask);
                         System.out.println(" Got it. I've added this task:\n"
                                 + "   " + newTask + "\n" + " Now you have "
                                 + taskStore.size() + " tasks in the list.");
+                    } else if (parts[0].equals("deadline")) {
 
-
-                    } else if (userInput.startsWith("deadline ")) {
                         int descEndIndex = userInput.indexOf(" /by ");
                         String description = userInput.substring(9, descEndIndex);
                         String by = userInput.substring(descEndIndex + 5);
@@ -48,7 +57,7 @@ public class Aeolian {
                                 + "   " + newTask + "\n" + " Now you have "
                                 + taskStore.size() + " tasks in the list.");
 
-                    } else if (userInput.startsWith("event ")) {
+                    } else if (parts[0].equals("event")) {
                         int descEndIndex = userInput.indexOf(" /from ");
                         String description = userInput.substring(6, descEndIndex);
                         int fromEndIndex = userInput.indexOf(" /to ");
@@ -60,7 +69,6 @@ public class Aeolian {
                         System.out.println(" Got it. I've added this task:\n"
                                 + "   " + newTask + "\n" + " Now you have "
                                 + taskStore.size() + " tasks in the list.");
-
 
                     } else if (userInput.matches("mark \\d+")) {
                         String[] tokens = userInput.split(" ");
