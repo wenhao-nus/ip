@@ -28,55 +28,59 @@ public class Aeolian {
                     System.out.println(" " + (i+1) + "." + currentTask);
                 }
             } else {
-                if (userInput.startsWith("todo ")) {
-                    String description = userInput.substring(5);
-                    Task newTask = new Todo(description);
-                    taskStore.add(newTask);
-                    System.out.println(" Got it. I've added this task:\n"
-                    + "   " + newTask + "\n" + " Now you have "
-                            + taskStore.size() + " tasks in the list.");
-
-                    
-                } else if (userInput.startsWith("deadline ")) {
-                    int descEndIndex = userInput.indexOf(" /by ");
-                    String description = userInput.substring(9, descEndIndex);
-                    String by = userInput.substring(descEndIndex + 5);
-                    Task newTask = new Deadline(description, by);
-                    taskStore.add(newTask);
-                    System.out.println(" Got it. I've added this task:\n"
-                            + "   " + newTask + "\n" + " Now you have "
-                            + taskStore.size() + " tasks in the list.");
-
-                } else if (userInput.startsWith("event ")) {
-                    int descEndIndex = userInput.indexOf(" /from ");
-                    String description = userInput.substring(6, descEndIndex);
-                    int fromEndIndex = userInput.indexOf(" /to ");
-                    String from = userInput.substring(descEndIndex + 7, fromEndIndex);
-                    String to = userInput.substring(fromEndIndex + 5);
-                    Task newTask = new Event(description, from, to);
-                    taskStore.add(newTask);
-
-                    System.out.println(" Got it. I've added this task:\n"
-                            + "   " + newTask + "\n" + " Now you have "
-                            + taskStore.size() + " tasks in the list.");
+                try {
+                    if (userInput.startsWith("todo ")) {
+                        String description = userInput.substring(5);
+                        Task newTask = new Todo(description);
+                        taskStore.add(newTask);
+                        System.out.println(" Got it. I've added this task:\n"
+                                + "   " + newTask + "\n" + " Now you have "
+                                + taskStore.size() + " tasks in the list.");
 
 
-                } else if (userInput.matches("mark \\d+")) {
-                    String[] tokens = userInput.split(" ");
-                    int taskIndex = Integer.parseInt(tokens[1]) - 1;
-                    Task chosenTask = taskStore.get(taskIndex);
-                    chosenTask.markAsDone();
-                    System.out.println(" Nice! I've marked this task as done:\n"
-                            + "   " + chosenTask);
-                } else if (userInput.matches("unmark \\d+")) {
-                    String[] tokens = userInput.split(" ");
-                    int taskIndex = Integer.parseInt(tokens[1]) - 1;
-                    Task chosenTask = taskStore.get(taskIndex);
-                    chosenTask.unmarkAsDone();
-                    System.out.println(" OK, I've marked this task as not done yet:\n"
-                            + "   " + chosenTask);
-                } else {
-                    System.out.println(" I don't understand what you mean.");
+                    } else if (userInput.startsWith("deadline ")) {
+                        int descEndIndex = userInput.indexOf(" /by ");
+                        String description = userInput.substring(9, descEndIndex);
+                        String by = userInput.substring(descEndIndex + 5);
+                        Task newTask = new Deadline(description, by);
+                        taskStore.add(newTask);
+                        System.out.println(" Got it. I've added this task:\n"
+                                + "   " + newTask + "\n" + " Now you have "
+                                + taskStore.size() + " tasks in the list.");
+
+                    } else if (userInput.startsWith("event ")) {
+                        int descEndIndex = userInput.indexOf(" /from ");
+                        String description = userInput.substring(6, descEndIndex);
+                        int fromEndIndex = userInput.indexOf(" /to ");
+                        String from = userInput.substring(descEndIndex + 7, fromEndIndex);
+                        String to = userInput.substring(fromEndIndex + 5);
+                        Task newTask = new Event(description, from, to);
+                        taskStore.add(newTask);
+
+                        System.out.println(" Got it. I've added this task:\n"
+                                + "   " + newTask + "\n" + " Now you have "
+                                + taskStore.size() + " tasks in the list.");
+
+
+                    } else if (userInput.matches("mark \\d+")) {
+                        String[] tokens = userInput.split(" ");
+                        int taskIndex = Integer.parseInt(tokens[1]) - 1;
+                        Task chosenTask = taskStore.get(taskIndex);
+                        chosenTask.markAsDone();
+                        System.out.println(" Nice! I've marked this task as done:\n"
+                                + "   " + chosenTask);
+                    } else if (userInput.matches("unmark \\d+")) {
+                        String[] tokens = userInput.split(" ");
+                        int taskIndex = Integer.parseInt(tokens[1]) - 1;
+                        Task chosenTask = taskStore.get(taskIndex);
+                        chosenTask.unmarkAsDone();
+                        System.out.println(" OK, I've marked this task as not done yet:\n"
+                                + "   " + chosenTask);
+                    } else {
+                        throw new AeolianException("I don't understand that command.");
+                    }
+                } catch (AeolianException e) {
+                    System.out.println(e.getMessage());
                 }
             }
             System.out.print(HORIZONTAL_LINE);
