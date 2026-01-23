@@ -25,9 +25,7 @@ public class Aeolian {
                 System.out.println(" Here are the tasks in your list:");
                 for (int i = 0; i < listStore.size(); i++) {
                     Task currentTask = listStore.get(i);
-                    System.out.println(" " + (i+1) + ".["
-                            + currentTask.getStatusIcon() + "] "
-                            + currentTask.description);
+                    System.out.println(" " + (i+1) + "." + currentTask);
                 }
                 System.out.println(HORIZONTAL_LINE);
 
@@ -40,7 +38,7 @@ public class Aeolian {
                     chosenTask.markAsDone();
                     System.out.print(HORIZONTAL_LINE +
                             " Nice! I've marked this task as done:\n"
-                            + "   [X] " + chosenTask.description +
+                            + "   " + chosenTask +
                             '\n' + HORIZONTAL_LINE);
                 } else if (userInput.matches("unmark \\d+")) {
                     String[] tokens = userInput.split(" ");
@@ -49,7 +47,7 @@ public class Aeolian {
                     chosenTask.unmarkAsDone();
                     System.out.print(HORIZONTAL_LINE +
                             " OK, I've marked this task as not done yet:\n"
-                            + "   [ ] " + chosenTask.description +
+                            + "   " + chosenTask +
                             '\n' + HORIZONTAL_LINE);
                 } else {
                     listStore.add(new Task(userInput));
