@@ -1,8 +1,13 @@
-import java.sql.SQLOutput;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 
 public class Aeolian {
+    private static final String FILE_PATH = "./data/aeolian.txt";
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         final String HORIZONTAL_LINE =
@@ -14,8 +19,7 @@ public class Aeolian {
         final String GOODBYE_MESSAGE = HORIZONTAL_LINE
                 + " Bye. Hope to see you again soon!\n" + HORIZONTAL_LINE;
 
-        ArrayList<Task> taskStore = new ArrayList<>();
-
+        ArrayList<Task> taskStore = loadTasksFromFile(FILE_PATH);
         System.out.print(GREETING_MESSAGE);
         String userInput = sc.nextLine();
 
@@ -99,11 +103,121 @@ public class Aeolian {
                 }
             }
             System.out.print(HORIZONTAL_LINE);
-
             userInput = sc.nextLine();
+        }
+
+        try {
+            saveTasksToFile(FILE_PATH, taskStore);
+        } catch (IOException e) {
+            System.out.println("Error saving tasks to file.");
         }
 
         System.out.println(GOODBYE_MESSAGE);
         sc.close();
+    }
+
+    private static ArrayList<Task> loadTasksFromFile(String filePath) {
+        ArrayList<Task> tasks = new ArrayList<>();
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return tasks; // first run, nothing to load
+        }
+
+        try {
+            Scanner fileScanner = new Scanner(file);
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine().trim();
+                if (line.isEmpty()) {
+                    continue;
+                }
+
+                try {
+                    Task t = parseTaskLine(line);
+                    if (t != null) {
+                        tasks.add(t);
+                    }
+                } catch (Exception corruptedLine) {
+                    System.out.println("Corrupted line from storage, skipping it.");
+                }
+            }
+
+            fileScanner.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading tasks from file.");
+        }
+        return tasks;
+    }
+
+    private static void saveTasksToFile(String filePath, ArrayList<Task> tasks) throws IOException {
+        File file = new File(filePath);
+
+        File parent = file.getParentFile(); // referring to ./data
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs(); // create ./data if missing
+        }
+
+        FileWriter fw = new FileWriter(file); // overwrite
+        for (Task t : tasks) {
+            fw.write(serializeTask(t));
+            fw.write(System.lineSeparator()); // add newline in cross-platform way
+        }
+        fw.close();
+    }
+
+    private static Task parseTaskLine(String line) {
+        // Format:
+        // T | 0/1 | desc
+        // D | 0/1 | desc | by
+        // E | 0/1 | desc | from | to
+        String[] parts = line.split("\\s*\\|\\s*");
+        if (parts.length < 3) {
+            throw new IllegalArgumentException("Bad line");
+        }
+
+        String type = parts[0];
+        boolean isDone = parts[1].equals("1");
+        String desc = parts[2];
+
+        Task task;
+        switch (type) {
+        case "T":
+            task = new Todo(desc);
+            break;
+        case "D":
+            if (parts.length < 4) {
+                throw new IllegalArgumentException("Bad deadline line.");
+            }
+            task = new Deadline(desc, parts[3]);
+            break;
+        case "E":
+            if (parts.length < 5) {
+                throw new IllegalArgumentException("Bad event line.");
+            }
+            task = new Event(desc, parts[3], parts[4]);
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown task type.");
+        }
+
+        if (isDone) {
+            task.markAsDone();
+        }
+        return task;
+    }
+
+    private static String serializeTask(Task t) {
+        String done = t.isDone() ? "1" : "0";
+
+        if (t instanceof Todo) {
+            return "T | " + done + " | " + t.getDescription();
+        } else if (t instanceof Deadline) {
+            Deadline d = (Deadline) t;
+            return "D | " + done + " | " + d.getDescription() + " | " + d.getBy();
+        } else if (t instanceof Event) {
+            Event e = (Event) t;
+            return "E | " + done + " | " + e.getDescription() + " | " + e.getFrom() + " | " + e.getTo();
+        } else {
+            return "T | " + done + " | " + t.getDescription();
+        }
     }
 }
