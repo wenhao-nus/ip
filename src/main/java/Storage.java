@@ -2,41 +2,28 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Storage {
-    private ArrayList<Task> tasks;
-    private String filePath;
+    private final TaskList taskList;
+    private final String filePath;
 
     public Storage(String filePath) {
-        this.tasks = loadTasksFromFile(filePath);
+        this.taskList = loadTasksFromFile(filePath);
         this.filePath = filePath;
     }
 
-    public Task getTask(int index) {
-        return tasks.get(index);
-    }
-
-    public void addTask(Task task) {
-        tasks.add(task);
-    }
-
-    public int getNumberOfTasks() {
-        return tasks.size();
-    }
-
-    public void removeTask(Task task) {
-        tasks.remove(task);
+    public TaskList getTaskList() {
+        return this.taskList;
     }
 
     public void save() throws IOException {
-        saveTasksToFile(filePath, tasks);
+        saveTasksToFile(filePath, taskList);
     }
 
 
-    private ArrayList<Task> loadTasksFromFile(String filePath) {
-        ArrayList<Task> tasks = new ArrayList<>();
+    private TaskList loadTasksFromFile(String filePath) {
+        TaskList tasks = new TaskList();
         File file = new File(filePath);
         if (!file.exists()) {
             return tasks; // first run, nothing to load
@@ -53,7 +40,7 @@ public class Storage {
                 try {
                     Task t = parseTaskLine(line);
                     if (t != null) {
-                        tasks.add(t);
+                        tasks.addTask(t);
                     }
                 } catch (Exception corruptedLine) {
                     System.out.println("Corrupted line from storage, skipping it.");
@@ -67,7 +54,7 @@ public class Storage {
         return tasks;
     }
 
-    private void saveTasksToFile(String filePath, ArrayList<Task> tasks) throws IOException {
+    private void saveTasksToFile(String filePath, TaskList tasks) throws IOException {
         File file = new File(filePath);
 
         File parent = file.getParentFile(); // referring to ./data
@@ -76,8 +63,8 @@ public class Storage {
         }
 
         FileWriter fw = new FileWriter(file); // overwrite
-        for (Task t : tasks) {
-            fw.write(serializeTask(t));
+        for (int i = 0; i < tasks.getNumberOfTasks(); i++ ) {
+            fw.write(serializeTask(tasks.getTask(i)));
             fw.write(System.lineSeparator()); // add newline in cross-platform way
         }
         fw.close();
