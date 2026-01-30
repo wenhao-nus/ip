@@ -52,22 +52,47 @@ public class Aeolian {
                                 + taskStore.size() + " tasks in the list.");
                     } else if (parts[0].equals("deadline")) {
 
-                        int descEndIndex = userInput.indexOf(" /by ");
-                        String description = userInput.substring(9, descEndIndex);
-                        String by = userInput.substring(descEndIndex + 5);
-                        Task newTask = new Deadline(description, by);
+                        int byIndex = userInput.indexOf(" /by ");
+                        if (byIndex == -1) {
+                            throw new AeolianException(" Deadline must have /by yyyy-MM-dd");
+                        }
+                        if (byIndex < 9) {
+                            throw new AeolianException(" Description of deadline cannot be enpty!");
+                        }
+
+                        String description = userInput.substring(9, byIndex).trim();
+                        String by = userInput.substring(byIndex + 5).trim();
+
+                        if (description.isEmpty()) {
+                            throw new AeolianException(" Description of deadline cannot be empty!");
+                        }
+
+                        Task newTask = new Deadline(description, by); // parses yyyy-MM-dd
                         taskStore.add(newTask);
                         System.out.println(" Got it. I've added this task:\n"
                                 + "   " + newTask + "\n" + " Now you have "
                                 + taskStore.size() + " tasks in the list.");
 
                     } else if (parts[0].equals("event")) {
-                        int descEndIndex = userInput.indexOf(" /from ");
-                        String description = userInput.substring(6, descEndIndex);
-                        int fromEndIndex = userInput.indexOf(" /to ");
-                        String from = userInput.substring(descEndIndex + 7, fromEndIndex);
-                        String to = userInput.substring(fromEndIndex + 5);
-                        Task newTask = new Event(description, from, to);
+                        int fromIndex = userInput.indexOf(" /from ");
+                        int toIndex = userInput.indexOf(" /to ");
+                        if (fromIndex == -1 || toIndex == -1 || toIndex < fromIndex) {
+                            throw new AeolianException(" Event must have /from yyyy-MM-dd and /to yyyy-MM-dd");
+                        }
+
+                        if (fromIndex < 6) {
+                            throw new AeolianException(" Description of deadline cannot be enpty!");
+                        }
+
+                        String description = userInput.substring(6, fromIndex).trim();
+                        String from = userInput.substring(fromIndex + 7, toIndex).trim();
+                        String to = userInput.substring(toIndex + 5).trim();
+
+                        if (description.isEmpty()) {
+                            throw new AeolianException(" Description of event cannot be empty!");
+                        }
+
+                        Task newTask = new Event(description, from, to); // parses yyyy-MM-dd
                         taskStore.add(newTask);
 
                         System.out.println(" Got it. I've added this task:\n"
@@ -164,7 +189,7 @@ public class Aeolian {
         fw.close();
     }
 
-    private static Task parseTaskLine(String line) {
+    private static Task parseTaskLine(String line) throws AeolianException {
         // Format:
         // T | 0/1 | desc
         // D | 0/1 | desc | by
