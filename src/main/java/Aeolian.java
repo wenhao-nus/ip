@@ -6,9 +6,18 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 
 public class Aeolian {
-    private static final String FILE_PATH = "./data/aeolian.txt";
+    private String filePath;
+
+    public Aeolian(String filePath) {
+        this.filePath = filePath;
+    }
 
     public static void main(String[] args) {
+        final String FILE_PATH = "./data/aeolian.txt";
+        new Aeolian(FILE_PATH).run();
+    }
+
+    public void run() {
         Scanner sc = new Scanner(System.in);
         final String HORIZONTAL_LINE =
                 "____________________________________________________________\n";
@@ -19,7 +28,7 @@ public class Aeolian {
         final String GOODBYE_MESSAGE = HORIZONTAL_LINE
                 + " Bye. Hope to see you again soon!\n" + HORIZONTAL_LINE;
 
-        ArrayList<Task> taskStore = loadTasksFromFile(FILE_PATH);
+        ArrayList<Task> taskStore = loadTasksFromFile(filePath);
         System.out.print(GREETING_MESSAGE);
         String userInput = sc.nextLine();
 
@@ -132,7 +141,7 @@ public class Aeolian {
         }
 
         try {
-            saveTasksToFile(FILE_PATH, taskStore);
+            saveTasksToFile(filePath, taskStore);
         } catch (IOException e) {
             System.out.println("Error saving tasks to file.");
         }
