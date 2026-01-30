@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 
 public class Aeolian {
-    private String filePath;
+    private Storage storage;
 
     public Aeolian(String filePath) {
-        this.filePath = filePath;
+        this.storage = new Storage(filePath);
     }
 
     public static void main(String[] args) {
@@ -28,7 +28,6 @@ public class Aeolian {
         final String GOODBYE_MESSAGE = HORIZONTAL_LINE
                 + " Bye. Hope to see you again soon!\n" + HORIZONTAL_LINE;
 
-        ArrayList<Task> taskStore = loadTasksFromFile(filePath);
         System.out.print(GREETING_MESSAGE);
         String userInput = sc.nextLine();
 
@@ -36,8 +35,8 @@ public class Aeolian {
             System.out.print(HORIZONTAL_LINE);
             if (userInput.equals("list")) {
                 System.out.println(" Here are the tasks in your list:");
-                for (int i = 0; i < taskStore.size(); i++) {
-                    Task currentTask = taskStore.get(i);
+                for (int i = 0; i < storage.getNumberOfTasks(); i++) {
+                    Task currentTask = storage.getTask(i);
                     System.out.println(" " + (i+1) + "." + currentTask);
                 }
             } else {
@@ -55,10 +54,10 @@ public class Aeolian {
                         }
 
                         Task newTask = new Todo(description);
-                        taskStore.add(newTask);
+                        storage.addTask(newTask);
                         System.out.println(" Got it. I've added this task:\n"
                                 + "   " + newTask + "\n" + " Now you have "
-                                + taskStore.size() + " tasks in the list.");
+                                + storage.getNumberOfTasks() + " tasks in the list.");
                     } else if (parts[0].equals("deadline")) {
 
                         int byIndex = userInput.indexOf(" /by ");
@@ -77,10 +76,10 @@ public class Aeolian {
                         }
 
                         Task newTask = new Deadline(description, by); // parses yyyy-MM-dd
-                        taskStore.add(newTask);
+                        storage.addTask(newTask);
                         System.out.println(" Got it. I've added this task:\n"
                                 + "   " + newTask + "\n" + " Now you have "
-                                + taskStore.size() + " tasks in the list.");
+                                + storage.getNumberOfTasks() + " tasks in the list.");
 
                     } else if (parts[0].equals("event")) {
                         int fromIndex = userInput.indexOf(" /from ");
@@ -102,33 +101,33 @@ public class Aeolian {
                         }
 
                         Task newTask = new Event(description, from, to); // parses yyyy-MM-dd
-                        taskStore.add(newTask);
+                        storage.addTask(newTask);
 
                         System.out.println(" Got it. I've added this task:\n"
                                 + "   " + newTask + "\n" + " Now you have "
-                                + taskStore.size() + " tasks in the list.");
+                                + storage.getNumberOfTasks() + " tasks in the list.");
 
                     } else if (userInput.matches("mark \\d+")) {
                         String[] tokens = userInput.split(" ");
                         int taskIndex = Integer.parseInt(tokens[1]) - 1;
-                        Task chosenTask = taskStore.get(taskIndex);
+                        Task chosenTask = storage.getTask(taskIndex);
                         chosenTask.markAsDone();
                         System.out.println(" Nice! I've marked this task as done:\n"
                                 + "   " + chosenTask);
                     } else if (userInput.matches("unmark \\d+")) {
                         String[] tokens = userInput.split(" ");
                         int taskIndex = Integer.parseInt(tokens[1]) - 1;
-                        Task chosenTask = taskStore.get(taskIndex);
+                        Task chosenTask = storage.getTask(taskIndex);
                         chosenTask.unmarkAsDone();
                         System.out.println(" OK, I've marked this task as not done yet:\n"
                                 + "   " + chosenTask);
                     } else if (userInput.matches("delete \\d+")) {
                         int indexToDelete = Integer.parseInt(parts[1]) - 1;
-                        Task deletedTask = taskStore.get(indexToDelete);
-                        taskStore.remove(deletedTask);
+                        Task deletedTask = storage.getTask(indexToDelete);
+                        storage.removeTask(deletedTask);
                         System.out.println(" Noted. I've removed this task:\n   " + deletedTask + "\n"
                                 + " Now you have "
-                                + taskStore.size() + " tasks in the list.");
+                                + storage.getNumberOfTasks() + " tasks in the list.");
                     } else {
                         throw new AeolianException(" I don't understand that command.");
                     }
@@ -141,7 +140,7 @@ public class Aeolian {
         }
 
         try {
-            saveTasksToFile(filePath, taskStore);
+            storage.save();
         } catch (IOException e) {
             System.out.println("Error saving tasks to file.");
         }
@@ -150,108 +149,4 @@ public class Aeolian {
         sc.close();
     }
 
-    private static ArrayList<Task> loadTasksFromFile(String filePath) {
-        ArrayList<Task> tasks = new ArrayList<>();
-        File file = new File(filePath);
-        if (!file.exists()) {
-            return tasks; // first run, nothing to load
-        }
-
-        try {
-            Scanner fileScanner = new Scanner(file);
-            while (fileScanner.hasNextLine()) {
-                String line = fileScanner.nextLine().trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
-
-                try {
-                    Task t = parseTaskLine(line);
-                    if (t != null) {
-                        tasks.add(t);
-                    }
-                } catch (Exception corruptedLine) {
-                    System.out.println("Corrupted line from storage, skipping it.");
-                }
-            }
-
-            fileScanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading tasks from file.");
-        }
-        return tasks;
-    }
-
-    private static void saveTasksToFile(String filePath, ArrayList<Task> tasks) throws IOException {
-        File file = new File(filePath);
-
-        File parent = file.getParentFile(); // referring to ./data
-        if (parent != null && !parent.exists()) {
-            parent.mkdirs(); // create ./data if missing
-        }
-
-        FileWriter fw = new FileWriter(file); // overwrite
-        for (Task t : tasks) {
-            fw.write(serializeTask(t));
-            fw.write(System.lineSeparator()); // add newline in cross-platform way
-        }
-        fw.close();
-    }
-
-    private static Task parseTaskLine(String line) throws AeolianException {
-        // Format:
-        // T | 0/1 | desc
-        // D | 0/1 | desc | by
-        // E | 0/1 | desc | from | to
-        String[] parts = line.split("\\s*\\|\\s*");
-        if (parts.length < 3) {
-            throw new IllegalArgumentException("Bad line");
-        }
-
-        String type = parts[0];
-        boolean isDone = parts[1].equals("1");
-        String desc = parts[2];
-
-        Task task;
-        switch (type) {
-        case "T":
-            task = new Todo(desc);
-            break;
-        case "D":
-            if (parts.length < 4) {
-                throw new IllegalArgumentException("Bad deadline line.");
-            }
-            task = new Deadline(desc, parts[3]);
-            break;
-        case "E":
-            if (parts.length < 5) {
-                throw new IllegalArgumentException("Bad event line.");
-            }
-            task = new Event(desc, parts[3], parts[4]);
-            break;
-        default:
-            throw new IllegalArgumentException("Unknown task type.");
-        }
-
-        if (isDone) {
-            task.markAsDone();
-        }
-        return task;
-    }
-
-    private static String serializeTask(Task t) {
-        String done = t.isDone() ? "1" : "0";
-
-        if (t instanceof Todo) {
-            return "T | " + done + " | " + t.getDescription();
-        } else if (t instanceof Deadline) {
-            Deadline d = (Deadline) t;
-            return "D | " + done + " | " + d.getDescription() + " | " + d.getBy();
-        } else if (t instanceof Event) {
-            Event e = (Event) t;
-            return "E | " + done + " | " + e.getDescription() + " | " + e.getFrom() + " | " + e.getTo();
-        } else {
-            return "T | " + done + " | " + t.getDescription();
-        }
-    }
 }
