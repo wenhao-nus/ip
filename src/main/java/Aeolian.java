@@ -29,9 +29,9 @@ public class Aeolian {
         System.out.print(GREETING_MESSAGE);
         String userInput = sc.nextLine();
 
-        while (!userInput.equals("bye")) {
+        while (!Parser.isByeCommand(userInput)) {
             System.out.print(HORIZONTAL_LINE);
-            if (userInput.equals("list")) {
+            if (Parser.isListCommand(userInput)) {
                 System.out.println(" Here are the tasks in your list:");
                 for (int i = 0; i < taskList.getNumberOfTasks(); i++) {
                     Task currentTask = taskList.getTask(i);
@@ -39,91 +39,42 @@ public class Aeolian {
                 }
             } else {
                 try {
-                    String[] parts = userInput.split(" ", 2);
-
-                    if (parts[0].equals("todo")) {
-
-                        if (parts.length < 2) {
-                            throw new AeolianException(" Description of todo cannot be empty!");
-                        }
-                        String description = parts[1].trim();
-                        if (description.isEmpty()) {
-                            throw new AeolianException(" Description of todo cannot be empty!");
-                        }
-
-                        Task newTask = new Todo(description);
+                    if (Parser.isTask(userInput)) {
+                        Task newTask = Parser.parseTask(userInput);
                         taskList.addTask(newTask);
                         System.out.println(" Got it. I've added this task:\n"
                                 + "   " + newTask + "\n" + " Now you have "
                                 + taskList.getNumberOfTasks() + " tasks in the list.");
-                    } else if (parts[0].equals("deadline")) {
-
-                        int byIndex = userInput.indexOf(" /by ");
-                        if (byIndex == -1) {
-                            throw new AeolianException(" Deadline must have /by yyyy-MM-dd");
-                        }
-                        if (byIndex < 9) {
-                            throw new AeolianException(" Description of deadline cannot be enpty!");
+                    } else if (Parser.isMarkCommand(userInput)) {
+                        int taskIndex = Parser.parseMarkUnmarkDelete(userInput);
+                        if (taskIndex >= taskList.getNumberOfTasks()) {
+                            throw new AeolianException(" There is no such task in the list.");
                         }
 
-                        String description = userInput.substring(9, byIndex).trim();
-                        String by = userInput.substring(byIndex + 5).trim();
-
-                        if (description.isEmpty()) {
-                            throw new AeolianException(" Description of deadline cannot be empty!");
-                        }
-
-                        Task newTask = new Deadline(description, by); // parses yyyy-MM-dd
-                        taskList.addTask(newTask);
-                        System.out.println(" Got it. I've added this task:\n"
-                                + "   " + newTask + "\n" + " Now you have "
-                                + taskList.getNumberOfTasks() + " tasks in the list.");
-
-                    } else if (parts[0].equals("event")) {
-                        int fromIndex = userInput.indexOf(" /from ");
-                        int toIndex = userInput.indexOf(" /to ");
-                        if (fromIndex == -1 || toIndex == -1 || toIndex < fromIndex) {
-                            throw new AeolianException(" Event must have /from yyyy-MM-dd and /to yyyy-MM-dd");
-                        }
-
-                        if (fromIndex < 6) {
-                            throw new AeolianException(" Description of deadline cannot be enpty!");
-                        }
-
-                        String description = userInput.substring(6, fromIndex).trim();
-                        String from = userInput.substring(fromIndex + 7, toIndex).trim();
-                        String to = userInput.substring(toIndex + 5).trim();
-
-                        if (description.isEmpty()) {
-                            throw new AeolianException(" Description of event cannot be empty!");
-                        }
-
-                        Task newTask = new Event(description, from, to); // parses yyyy-MM-dd
-                        taskList.addTask(newTask);
-
-                        System.out.println(" Got it. I've added this task:\n"
-                                + "   " + newTask + "\n" + " Now you have "
-                                + taskList.getNumberOfTasks() + " tasks in the list.");
-
-                    } else if (userInput.matches("mark \\d+")) {
-                        String[] tokens = userInput.split(" ");
-                        int taskIndex = Integer.parseInt(tokens[1]) - 1;
                         Task chosenTask = taskList.getTask(taskIndex);
                         chosenTask.markAsDone();
                         System.out.println(" Nice! I've marked this task as done:\n"
                                 + "   " + chosenTask);
-                    } else if (userInput.matches("unmark \\d+")) {
-                        String[] tokens = userInput.split(" ");
-                        int taskIndex = Integer.parseInt(tokens[1]) - 1;
+                    } else if (Parser.isUnmarkCommand(userInput)) {
+                        int taskIndex = Parser.parseMarkUnmarkDelete(userInput);
+                        if (taskIndex >= taskList.getNumberOfTasks()) {
+                            throw new AeolianException(" There is no such task in the list.");
+                        }
+
                         Task chosenTask = taskList.getTask(taskIndex);
-                        chosenTask.unmarkAsDone();
+                        chosenTask.markAsDone();
                         System.out.println(" OK, I've marked this task as not done yet:\n"
                                 + "   " + chosenTask);
-                    } else if (userInput.matches("delete \\d+")) {
-                        int indexToDelete = Integer.parseInt(parts[1]) - 1;
-                        Task deletedTask = taskList.getTask(indexToDelete);
-                        taskList.removeTask(deletedTask);
-                        System.out.println(" Noted. I've removed this task:\n   " + deletedTask + "\n"
+                    } else if (Parser.isDeleteCommand(userInput)) {
+                        String[] tokens = userInput.split(" ");
+                        int taskIndex = Parser.parseMarkUnmarkDelete(userInput);
+                        if (taskIndex >= taskList.getNumberOfTasks()) {
+                            throw new AeolianException(" There is no such task in the list.");
+                        }
+
+                        Task chosenTask = taskList.getTask(taskIndex);
+                        taskList.removeTask(chosenTask);
+                        System.out.println(" Noted. I've removed this task:\n   " + chosenTask + "\n"
                                 + " Now you have "
                                 + taskList.getNumberOfTasks() + " tasks in the list.");
                     } else {
