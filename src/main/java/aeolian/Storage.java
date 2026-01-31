@@ -6,19 +6,37 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * Deals with loading tasks from a file on disk and saving tasks in a file.
+ */
 public class Storage {
     private final TaskList taskList;
     private final String filePath;
 
+    /**
+     * Constructs a Storage object with the specified file path.
+     *
+     * @param filePath Path to the file where tasks are stored.
+     */
     public Storage(String filePath) {
         this.taskList = loadTasksFromFile(filePath);
         this.filePath = filePath;
     }
 
+    /**
+     * Returns the task list loaded from the file.
+     *
+     * @return The task list.
+     */
     public TaskList getTaskList() {
         return this.taskList;
     }
 
+    /**
+     * Saves the current task list to the file.
+     *
+     * @throws IOException If there is an error writing to the file.
+     */
     public void save() throws IOException {
         saveTasksToFile(filePath, taskList);
     }

@@ -3,22 +3,38 @@ package aeolian;
 import java.util.Scanner;
 import java.io.IOException;
 
+/**
+ * Represents the main chatbot class Aeolian.
+ */
 public class Aeolian {
     private Storage storage;
     private TaskList taskList;
     private Ui ui;
 
+    /**
+     * Constructs an Aeolian object with the given file path.
+     *
+     * @param filePath Path to the storage file.
+     */
     public Aeolian(String filePath) {
         this.storage = new Storage(filePath);
         this.taskList = this.storage.getTaskList();
         this.ui = new Ui();
     }
 
+    /**
+     * Main method to start the Aeolian application.
+     *
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
         final String FILE_PATH = "./data/aeolian.txt";
         new Aeolian(FILE_PATH).run();
     }
 
+    /**
+     * Runs the main loop of the application, processing user commands.
+     */
     public void run() {
         Scanner sc = new Scanner(System.in);
 

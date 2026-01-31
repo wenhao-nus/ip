@@ -2,10 +2,16 @@ package aeolian;
 
 import java.io.IOException;
 
+/**
+ * Deals with output interactions with the user.
+ */
 public class Ui {
     private final String HORIZONTAL_LINE =
             "____________________________________________________________\n";
 
+    /**
+     * Displays a greeting message to the user.
+     */
     public void showGreetings() {
         String GREETING_MESSAGE = HORIZONTAL_LINE +
                 " Hello! I'm Aeolian\n" +
@@ -14,12 +20,20 @@ public class Ui {
         System.out.print(GREETING_MESSAGE);
     }
 
+    /**
+     * Displays a goodbye message to the user.
+     */
     public void showGoodbye() {
         String GOODBYE_MESSAGE = HORIZONTAL_LINE
                 + " Bye. Hope to see you again soon!\n" + HORIZONTAL_LINE;
         System.out.print(GOODBYE_MESSAGE);
     }
 
+    /**
+     * Displays an error message based on the exception encountered.
+     *
+     * @param e The exception that occurred.
+     */
     public void showException(Exception e) {
         if (e instanceof AeolianException) {
             System.out.print(HORIZONTAL_LINE);
@@ -38,6 +52,11 @@ public class Ui {
         }
     }
 
+    /**
+     * Displays all tasks in the task list.
+     *
+     * @param taskList The list of tasks to be displayed.
+     */
     public void showAllTasks(TaskList taskList) {
         System.out.print(HORIZONTAL_LINE);
         System.out.println(" Here are the tasks in your list:");
@@ -49,6 +68,12 @@ public class Ui {
 
     }
 
+    /**
+     * Displays a success message after adding a task.
+     *
+     * @param newTask The task that was added.
+     * @param taskList The updated task list.
+     */
     public void showAddTaskSuccess(Task newTask, TaskList taskList) {
         System.out.print(HORIZONTAL_LINE);
         System.out.println(" Got it. I've added this task:\n"
@@ -58,6 +83,11 @@ public class Ui {
 
     }
 
+    /**
+     * Displays a success message after marking a task as done.
+     *
+     * @param chosenTask The task that was marked.
+     */
     public void showMarkTaskSuccess(Task chosenTask) {
         System.out.print(HORIZONTAL_LINE);
         System.out.println(" Nice! I've marked this task as done:\n"
@@ -66,6 +96,11 @@ public class Ui {
 
     }
 
+    /**
+     * Displays a success message after unmarking a task as done.
+     *
+     * @param chosenTask The task that was unmarked.
+     */
     public void showUnmarkTaskSuccess(Task chosenTask) {
         System.out.print(HORIZONTAL_LINE);
         System.out.println(" OK, I've marked this task as not done yet:\n"
@@ -74,6 +109,12 @@ public class Ui {
 
     }
 
+    /**
+     * Displays a success message after deleting a task.
+     *
+     * @param chosenTask The task that was deleted.
+     * @param taskList The updated task list.
+     */
     public void showDeleteTaskSuccess(Task chosenTask, TaskList taskList) {
         System.out.print(HORIZONTAL_LINE);
         System.out.println(" Noted. I've removed this task:\n   " + chosenTask + "\n"

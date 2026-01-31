@@ -1,30 +1,77 @@
 package aeolian;
 
+/**
+ * Deals with making sense of the user command.
+ */
 public class Parser {
+    /**
+     * Checks if the user input is a "bye" command.
+     *
+     * @param userInput Input string from user.
+     * @return True if input is a "bye" command, false otherwise.
+     */
     public static boolean isByeCommand(String userInput) {
         return userInput.equals("bye");
     }
 
+    /**
+     * Checks if the user input is a "list" command.
+     *
+     * @param userInput Input string from user.
+     * @return True if input is a "list" command, false otherwise.
+     */
     public static boolean isListCommand(String userInput) {
         return userInput.equals("list");
     }
 
+    /**
+     * Checks if the user input is a type of task command.
+     * A task command is a "todo", "deadline" or "event" command.
+     *
+     * @param userInput Input string from user.
+     * @return True if input is a task command, false otherwise.
+     */
     public static boolean isTask(String userInput) {
         return (userInput.startsWith("todo") || userInput.startsWith("deadline") || userInput.startsWith("event"));
     }
 
+    /**
+     * Checks if the user input is a "mark" command.
+     *
+     * @param userInput Input string from user.
+     * @return True if input starts with "mark", false otherwise.
+     */
     public static boolean isMarkCommand(String userInput) {
         return userInput.startsWith("mark");
     }
 
+    /**
+     * Checks if the user input is a "delete" command.
+     *
+     * @param userInput Input string from user.
+     * @return True if input starts with "delete", false otherwise.
+     */
     public static boolean isDeleteCommand(String userInput) {
         return userInput.startsWith("delete");
     }
 
+    /**
+     * Checks if the user input is an "unmark" command.
+     *
+     * @param userInput Input string from user.
+     * @return True if input starts with "unmark", false otherwise.
+     */
     public static boolean isUnmarkCommand(String userInput) {
         return userInput.startsWith("unmark");
     }
 
+    /**
+     * Parses the task index from mark, unmark, or delete commands.
+     *
+     * @param userInput Input string from user.
+     * @return The 0-based index of the task.
+     * @throws AeolianException If the command format is invalid.
+     */
     public static int parseMarkUnmarkDelete(String userInput) throws AeolianException {
         if (userInput.matches("mark \\d+") || userInput.matches("unmark \\d+")
                 || userInput.matches("delete \\d+")) {
@@ -34,6 +81,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a task command and returns the corresponding Task object.
+     *
+     * @param userInput Input string from user.
+     * @return The Task object represented by the input.
+     * @throws AeolianException If the command format is invalid or description is missing.
+     */
     public static Task parseTask(String userInput) throws AeolianException {
         String[] parts = userInput.split(" ");
 
