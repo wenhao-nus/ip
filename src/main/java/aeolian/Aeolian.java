@@ -10,6 +10,7 @@ public class Aeolian {
     private Storage storage;
     private TaskList taskList;
     private Ui ui;
+    private static final String FILE_PATH = "./data/aeolian.txt";
 
     /**
      * Constructs an Aeolian object with the given file path.
@@ -28,7 +29,6 @@ public class Aeolian {
      * @param args Command line arguments.
      */
     public static void main(String[] args) {
-        final String FILE_PATH = "./data/aeolian.txt";
         new Aeolian(FILE_PATH).run();
     }
 
@@ -97,5 +97,4 @@ public class Aeolian {
         ui.showGoodbye();
         sc.close();
     }
-
 }

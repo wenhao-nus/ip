@@ -41,7 +41,6 @@ public class Storage {
         saveTasksToFile(filePath, taskList);
     }
 
-
     private TaskList loadTasksFromFile(String filePath) {
         TaskList tasks = new TaskList();
         File file = new File(filePath);
@@ -66,7 +65,6 @@ public class Storage {
                     System.out.println("Corrupted line from storage, skipping it.");
                 }
             }
-
             fileScanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("Error reading tasks from file.");
@@ -133,7 +131,6 @@ public class Storage {
 
     private String serializeTask(Task t) {
         String done = t.isDone() ? "1" : "0";
-
         if (t instanceof Todo) {
             return "T | " + done + " | " + t.getDescription();
         } else if (t instanceof Deadline) {
