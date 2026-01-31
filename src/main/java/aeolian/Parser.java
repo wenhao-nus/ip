@@ -1,3 +1,5 @@
+package aeolian;
+
 public class Parser {
     public static boolean isByeCommand(String userInput) {
         return userInput.equals("bye");
