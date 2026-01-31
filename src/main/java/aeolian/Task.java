@@ -8,7 +8,6 @@ public class Task {
     protected static final DateTimeFormatter OUTPUT_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
 
-
     public Task(String description) {
         this.description = description;
         this.isDone = false;

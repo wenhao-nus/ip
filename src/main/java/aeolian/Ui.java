@@ -3,21 +3,19 @@ package aeolian;
 import java.io.IOException;
 
 public class Ui {
-    private final String HORIZONTAL_LINE =
+    private static final String HORIZONTAL_LINE =
             "____________________________________________________________\n";
 
     public void showGreetings() {
-        String GREETING_MESSAGE = HORIZONTAL_LINE +
+        System.out.print(HORIZONTAL_LINE +
                 " Hello! I'm Aeolian\n" +
                 " What can I do for you?\n" +
-                HORIZONTAL_LINE;
-        System.out.print(GREETING_MESSAGE);
+                HORIZONTAL_LINE);
     }
 
     public void showGoodbye() {
-        String GOODBYE_MESSAGE = HORIZONTAL_LINE
-                + " Bye. Hope to see you again soon!\n" + HORIZONTAL_LINE;
-        System.out.print(GOODBYE_MESSAGE);
+        System.out.print(HORIZONTAL_LINE
+                + " Bye. Hope to see you again soon!\n" + HORIZONTAL_LINE);
     }
 
     public void showException(Exception e) {
@@ -29,12 +27,10 @@ public class Ui {
             System.out.print(HORIZONTAL_LINE);
             System.out.println("IO error.");
             System.out.print(HORIZONTAL_LINE);
-
         } else {
             System.out.print(HORIZONTAL_LINE);
             System.out.println("An error has occurred.");
             System.out.print(HORIZONTAL_LINE);
-
         }
     }
 
@@ -43,10 +39,9 @@ public class Ui {
         System.out.println(" Here are the tasks in your list:");
         for (int i = 0; i < taskList.getNumberOfTasks(); i++) {
             Task currentTask = taskList.getTask(i);
-            System.out.println(" " + (i+1) + "." + currentTask);
+            System.out.println(" " + (i + 1) + "." + currentTask);
         }
         System.out.print(HORIZONTAL_LINE);
-
     }
 
     public void showAddTaskSuccess(Task newTask, TaskList taskList) {
@@ -55,7 +50,6 @@ public class Ui {
                 + "   " + newTask + "\n" + " Now you have "
                 + taskList.getNumberOfTasks() + " tasks in the list.");
         System.out.print(HORIZONTAL_LINE);
-
     }
 
     public void showMarkTaskSuccess(Task chosenTask) {
@@ -63,7 +57,6 @@ public class Ui {
         System.out.println(" Nice! I've marked this task as done:\n"
                 + "   " + chosenTask);
         System.out.print(HORIZONTAL_LINE);
-
     }
 
     public void showUnmarkTaskSuccess(Task chosenTask) {
@@ -71,7 +64,6 @@ public class Ui {
         System.out.println(" OK, I've marked this task as not done yet:\n"
                 + "   " + chosenTask);
         System.out.print(HORIZONTAL_LINE);
-
     }
 
     public void showDeleteTaskSuccess(Task chosenTask, TaskList taskList) {
@@ -80,8 +72,5 @@ public class Ui {
                 + " Now you have "
                 + taskList.getNumberOfTasks() + " tasks in the list.");
         System.out.print(HORIZONTAL_LINE);
-
     }
-
-
 }

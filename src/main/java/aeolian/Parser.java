@@ -85,10 +85,6 @@ public class Parser {
             }
 
             return new Event(description, from, to);
-
         }
     }
 }
-
-
-
