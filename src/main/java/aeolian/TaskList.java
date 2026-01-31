@@ -24,4 +24,14 @@ public class TaskList {
     public void removeTask(Task task) {
         tasks.remove(task);
     }
+
+    public TaskList findTasks(String keyword) {
+        TaskList matchingTasks = new TaskList();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matchingTasks.addTask(task);
+            }
+        }
+        return matchingTasks;
+    }
 }

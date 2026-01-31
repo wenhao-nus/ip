@@ -67,4 +67,27 @@ public class ParserTest {
             Parser.parseMarkUnmarkDelete("mark abc");
         });
     }
+
+    @Test
+    public void isFindCommand_validInput_success() {
+        assertTrue(Parser.isFindCommand("find book"));
+        assertTrue(Parser.isFindCommand("find "));
+        assertTrue(Parser.isFindCommand("find"));
+    }
+
+    @Test
+    public void parseFindKeyword_validInput_success() throws AeolianException {
+        assertEquals("book", Parser.parseFindKeyword("find book"));
+        assertEquals("read book", Parser.parseFindKeyword("find  read book "));
+    }
+
+    @Test
+    public void parseFindKeyword_emptyKeyword_exceptionThrown() {
+        assertThrows(AeolianException.class, () -> {
+            Parser.parseFindKeyword("find");
+        });
+        assertThrows(AeolianException.class, () -> {
+            Parser.parseFindKeyword("find   ");
+        });
+    }
 }

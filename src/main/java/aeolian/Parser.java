@@ -25,6 +25,21 @@ public class Parser {
         return userInput.startsWith("unmark");
     }
 
+    public static boolean isFindCommand(String userInput) {
+        return userInput.startsWith("find");
+    }
+
+    public static String parseFindKeyword(String userInput) throws AeolianException {
+        if (userInput.trim().equals("find")) {
+            throw new AeolianException(" The keyword for find cannot be empty.");
+        }
+        String keyword = userInput.substring(5).trim();
+        if (keyword.isEmpty()) {
+            throw new AeolianException(" The keyword for find cannot be empty.");
+        }
+        return keyword;
+    }
+
     public static int parseMarkUnmarkDelete(String userInput) throws AeolianException {
         if (userInput.matches("mark \\d+") || userInput.matches("unmark \\d+")
                 || userInput.matches("delete \\d+")) {

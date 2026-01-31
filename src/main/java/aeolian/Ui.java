@@ -83,5 +83,13 @@ public class Ui {
 
     }
 
-
+    public void showMatchingTasks(TaskList matchingTasks) {
+        System.out.print(HORIZONTAL_LINE);
+        System.out.println(" Here are the matching tasks in your list:");
+        for (int i = 0; i < matchingTasks.getNumberOfTasks(); i++) {
+            Task currentTask = matchingTasks.getTask(i);
+            System.out.println(" " + (i + 1) + "." + currentTask);
+        }
+        System.out.print(HORIZONTAL_LINE);
+    }
 }
