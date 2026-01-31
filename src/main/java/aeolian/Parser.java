@@ -41,7 +41,7 @@ public class Parser {
             if (parts.length < 2) {
                 throw new AeolianException(" Description of todo cannot be empty!");
             }
-            String description = parts[1].trim();
+            String description = userInput.substring(5).trim();
             if (description.isEmpty()) {
                 throw new AeolianException(" Description of todo cannot be empty!");
             }
@@ -54,7 +54,7 @@ public class Parser {
                 throw new AeolianException(" deadline must have /by yyyy-MM-dd");
             }
             if (byIndex < 9) {
-                throw new AeolianException(" Description of deadline cannot be enpty!");
+                throw new AeolianException(" Description of deadline cannot be empty!");
             }
 
             String description = userInput.substring(9, byIndex).trim();
@@ -73,7 +73,7 @@ public class Parser {
             }
 
             if (fromIndex < 6) {
-                throw new AeolianException(" Description of deadline cannot be enpty!");
+                throw new AeolianException(" Description of event cannot be empty!");
             }
 
             String description = userInput.substring(6, fromIndex).trim();
