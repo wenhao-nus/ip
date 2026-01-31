@@ -7,7 +7,6 @@ import java.time.format.DateTimeParseException;
  * Represents an event task with a start and end date.
  */
 public class Event extends Task {
-
     private final LocalDate from;
     private final LocalDate to;
 
@@ -21,7 +20,6 @@ public class Event extends Task {
      */
     public Event(String description, String from, String to) throws AeolianException {
         super(description);
-
         try {
             this.from = LocalDate.parse(from.trim()); // yyyy-MM-dd
             this.to = LocalDate.parse(to.trim());     // yyyy-MM-dd

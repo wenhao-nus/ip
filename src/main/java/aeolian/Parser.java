@@ -152,7 +152,6 @@ public class Parser {
             if (description.isEmpty()) {
                 throw new AeolianException(" Description of event cannot be empty!");
             }
-
             return new Event(description, from, to);
         }
     }
