@@ -50,6 +50,10 @@ public class Aeolian {
                         Task newTask = Parser.parseTask(userInput);
                         taskList.addTask(newTask);
                         ui.showAddTaskSuccess(newTask, taskList);
+                    } else if (Parser.isFindCommand(userInput)) {
+                        String keyword = Parser.parseFindKeyword(userInput);
+                        TaskList matchingTasks = taskList.findTasks(keyword);
+                        ui.showMatchingTasks(matchingTasks);
                     } else if (Parser.isMarkCommand(userInput)) {
                         int taskIndex = Parser.parseMarkUnmarkDelete(userInput);
                         if (taskIndex >= taskList.getNumberOfTasks()) {

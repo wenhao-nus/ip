@@ -58,9 +58,10 @@ public class Ui {
         System.out.println(" Here are the tasks in your list:");
         for (int i = 0; i < taskList.getNumberOfTasks(); i++) {
             Task currentTask = taskList.getTask(i);
-            System.out.println(" " + (i + 1) + "." + currentTask);
+            System.out.println(" " + (i+1) + "." + currentTask);
         }
         System.out.print(HORIZONTAL_LINE);
+
     }
 
     /**
@@ -112,6 +113,16 @@ public class Ui {
         System.out.println(" Noted. I've removed this task:\n   " + chosenTask + "\n"
                 + " Now you have "
                 + taskList.getNumberOfTasks() + " tasks in the list.");
+        System.out.print(HORIZONTAL_LINE);
+    }
+
+    public void showMatchingTasks(TaskList matchingTasks) {
+        System.out.print(HORIZONTAL_LINE);
+        System.out.println(" Here are the matching tasks in your list:");
+        for (int i = 0; i < matchingTasks.getNumberOfTasks(); i++) {
+            Task currentTask = matchingTasks.getTask(i);
+            System.out.println(" " + (i + 1) + "." + currentTask);
+        }
         System.out.print(HORIZONTAL_LINE);
     }
 }
