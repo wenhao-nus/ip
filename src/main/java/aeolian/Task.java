@@ -11,7 +11,6 @@ public class Task {
     protected static final DateTimeFormatter OUTPUT_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
 
-
     /**
      * Constructs a Task with the given description.
      *
