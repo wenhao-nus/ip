@@ -1,16 +1,16 @@
 package aeolian;
 
-import java.util.Scanner;
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * Represents the main chatbot class Aeolian.
  */
 public class Aeolian {
+    private static final String FILE_PATH = "./data/aeolian.txt";
     private Storage storage;
     private TaskList taskList;
     private Ui ui;
-    private static final String FILE_PATH = "./data/aeolian.txt";
 
     /**
      * Constructs an Aeolian object with the given file path.
@@ -73,7 +73,6 @@ public class Aeolian {
                         chosenTask.unmarkAsDone();
                         ui.showUnmarkTaskSuccess(chosenTask);
                     } else if (Parser.isDeleteCommand(userInput)) {
-                        String[] tokens = userInput.split(" ");
                         int taskIndex = Parser.parseMarkUnmarkDelete(userInput);
                         if (taskIndex >= taskList.getNumberOfTasks()) {
                             throw new AeolianException(" There is no such task in the list.");

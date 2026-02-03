@@ -22,7 +22,7 @@ public class Event extends Task {
         super(description);
         try {
             this.from = LocalDate.parse(from.trim()); // yyyy-MM-dd
-            this.to = LocalDate.parse(to.trim());     // yyyy-MM-dd
+            this.to = LocalDate.parse(to.trim()); // yyyy-MM-dd
         } catch (DateTimeParseException e) {
             throw new AeolianException(" Invalid date format! Use yyyy-MM-dd (e.g., 2019-10-15).");
         }

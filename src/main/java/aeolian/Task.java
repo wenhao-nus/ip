@@ -6,10 +6,11 @@ import java.time.format.DateTimeFormatter;
  * Represents a task in the chatbot.
  */
 public class Task {
-    protected String description;
-    protected boolean isDone;
     protected static final DateTimeFormatter OUTPUT_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
+    protected String description;
+    protected boolean isDone;
+
 
     /**
      * Constructs a Task with the given description.

@@ -7,7 +7,7 @@ public class Parser {
     /**
      * Checks if the user input is a "bye" command.
      *
-     * @param userInput Input string from user.
+     * @param userInput Input string from the user.
      * @return True if input is a "bye" command, false otherwise.
      */
     public static boolean isByeCommand(String userInput) {
@@ -17,7 +17,7 @@ public class Parser {
     /**
      * Checks if the user input is a "list" command.
      *
-     * @param userInput Input string from user.
+     * @param userInput Input string from the user.
      * @return True if input is a "list" command, false otherwise.
      */
     public static boolean isListCommand(String userInput) {
@@ -28,7 +28,7 @@ public class Parser {
      * Checks if the user input is a type of task command.
      * A task command is a "todo", "deadline" or "event" command.
      *
-     * @param userInput Input string from user.
+     * @param userInput Input string from the user.
      * @return True if input is a task command, false otherwise.
      */
     public static boolean isTask(String userInput) {
@@ -38,7 +38,7 @@ public class Parser {
     /**
      * Checks if the user input is a "mark" command.
      *
-     * @param userInput Input string from user.
+     * @param userInput Input string from the user.
      * @return True if input starts with "mark", false otherwise.
      */
     public static boolean isMarkCommand(String userInput) {
@@ -48,7 +48,7 @@ public class Parser {
     /**
      * Checks if the user input is a "delete" command.
      *
-     * @param userInput Input string from user.
+     * @param userInput Input string from the user.
      * @return True if input starts with "delete", false otherwise.
      */
     public static boolean isDeleteCommand(String userInput) {
@@ -58,17 +58,33 @@ public class Parser {
     /**
      * Checks if the user input is an "unmark" command.
      *
-     * @param userInput Input string from user.
+     * @param userInput Input string from the user.
      * @return True if input starts with "unmark", false otherwise.
      */
     public static boolean isUnmarkCommand(String userInput) {
         return userInput.startsWith("unmark");
     }
 
+    /**
+     * Checks if the user input is a "find" command.
+     *
+     * @param userInput Input string from the user.
+     * @return True if input starts with "find", false otherwise.
+     */
     public static boolean isFindCommand(String userInput) {
         return userInput.startsWith("find");
     }
 
+    /**
+     * Parses the keyword from a "find" command.
+     *
+     * <p>Expects input in the form: {@code find <keyword>}.
+     * Trailing and leading spaces around the keyword are ignored.
+     *
+     * @param userInput Input string from the user.
+     * @return The non-empty keyword to search for.
+     * @throws AeolianException If the keyword is missing or empty.
+     */
     public static String parseFindKeyword(String userInput) throws AeolianException {
         if (userInput.trim().equals("find")) {
             throw new AeolianException(" The keyword for find cannot be empty.");
@@ -83,7 +99,7 @@ public class Parser {
     /**
      * Parses the task index from mark, unmark, or delete commands.
      *
-     * @param userInput Input string from user.
+     * @param userInput Input string from the user.
      * @return The 0-based index of the task.
      * @throws AeolianException If the command format is invalid.
      */
@@ -99,9 +115,9 @@ public class Parser {
     /**
      * Parses a task command and returns the corresponding Task object.
      *
-     * @param userInput Input string from user.
+     * @param userInput Input string from the user.
      * @return The Task object represented by the input.
-     * @throws AeolianException If the command format is invalid or description is missing.
+     * @throws AeolianException If the command format is invalid or the description is missing.
      */
     public static Task parseTask(String userInput) throws AeolianException {
         String[] parts = userInput.split(" ");

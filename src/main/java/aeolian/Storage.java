@@ -41,6 +41,12 @@ public class Storage {
         saveTasksToFile(filePath, taskList);
     }
 
+    /**
+     * Loads tasks from the specified file path, creating an empty list if the file does not exist.
+     *
+     * @param filePath Path to the storage file.
+     * @return A TaskList initialized with tasks parsed from the file.
+     */
     private TaskList loadTasksFromFile(String filePath) {
         TaskList tasks = new TaskList();
         File file = new File(filePath);
@@ -72,6 +78,13 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves the provided tasks to the specified file path, creating parent directories if needed.
+     *
+     * @param filePath Path to the storage file.
+     * @param tasks The tasks to serialize and write.
+     * @throws IOException If there is an error while writing to the file.
+     */
     private void saveTasksToFile(String filePath, TaskList tasks) throws IOException {
         File file = new File(filePath);
 
@@ -81,13 +94,28 @@ public class Storage {
         }
 
         FileWriter fw = new FileWriter(file); // overwrite
-        for (int i = 0; i < tasks.getNumberOfTasks(); i++ ) {
+        for (int i = 0; i < tasks.getNumberOfTasks(); i++) {
             fw.write(serializeTask(tasks.getTask(i)));
             fw.write(System.lineSeparator()); // add newline in cross-platform way
         }
         fw.close();
     }
 
+    /**
+     * Parses a single serialized task line into a Task.
+     *
+     * <p>Expected formats:
+     * <pre>
+     * T | 0/1 | desc
+     * D | 0/1 | desc | by
+     * E | 0/1 | desc | from | to
+     * </pre>
+     *
+     * @param line The line to parse.
+     * @return The Task represented by the line.
+     * @throws AeolianException If task-specific parsing fails (e.g., invalid date).
+     * @throws IllegalArgumentException If the line is malformed or the type is unknown.
+     */
     private Task parseTaskLine(String line) throws AeolianException {
         // Format:
         // T | 0/1 | desc
@@ -129,6 +157,12 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Serializes a task into its storage line format.
+     *
+     * @param t The task to serialize.
+     * @return A single-line string representation suitable for storage.
+     */
     private String serializeTask(Task t) {
         String done = t.isDone() ? "1" : "0";
         if (t instanceof Todo) {
@@ -144,3 +178,4 @@ public class Storage {
         }
     }
 }
+

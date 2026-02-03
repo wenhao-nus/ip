@@ -13,10 +13,10 @@ public class Ui {
      * Displays a greeting message to the user.
      */
     public void showGreetings() {
-        System.out.print(HORIZONTAL_LINE +
-                " Hello! I'm Aeolian\n" +
-                " What can I do for you?\n" +
-                HORIZONTAL_LINE);
+        System.out.print(HORIZONTAL_LINE
+                + " Hello! I'm Aeolian\n"
+                + " What can I do for you?\n"
+                + HORIZONTAL_LINE);
     }
 
     /**
@@ -115,6 +115,11 @@ public class Ui {
         System.out.print(HORIZONTAL_LINE);
     }
 
+    /**
+     * Displays the tasks that match a search keyword.
+     *
+     * @param matchingTasks The list of tasks that matched the search.
+     */
     public void showMatchingTasks(TaskList matchingTasks) {
         System.out.print(HORIZONTAL_LINE);
         System.out.println(" Here are the matching tasks in your list:");

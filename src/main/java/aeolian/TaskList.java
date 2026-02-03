@@ -52,6 +52,13 @@ public class TaskList {
         tasks.remove(task);
     }
 
+    /**
+     * Returns a new list containing tasks whose descriptions contain the given keyword.
+     * The match is case-sensitive and performs a simple substring check.
+     *
+     * @param keyword The keyword to search for in task descriptions.
+     * @return A TaskList with all matching tasks; empty if none match.
+     */
     public TaskList findTasks(String keyword) {
         TaskList matchingTasks = new TaskList();
         for (Task task : tasks) {
@@ -62,3 +69,4 @@ public class TaskList {
         return matchingTasks;
     }
 }
+
