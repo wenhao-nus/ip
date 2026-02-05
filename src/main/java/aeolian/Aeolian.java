@@ -7,7 +7,6 @@ import java.util.Scanner;
  * Represents the main chatbot class Aeolian.
  */
 public class Aeolian {
-    private static final String FILE_PATH = "./data/aeolian.txt";
     private Storage storage;
     private TaskList taskList;
     private Ui ui;
@@ -23,13 +22,60 @@ public class Aeolian {
         this.ui = new Ui();
     }
 
+    public String getResponse(String input) {
+        try {
+            if (Parser.isByeCommand(input)) {
+                storage.save();
+                return ui.showGoodbye();
+            } else if (Parser.isListCommand(input)) {
+                return ui.showAllTasks(taskList);
+            } else if (Parser.isTask(input)) {
+                Task newTask = Parser.parseTask(input);
+                taskList.addTask(newTask);
+                return ui.showAddTaskSuccess(newTask, taskList);
+            } else if (Parser.isFindCommand(input)) {
+                String keyword = Parser.parseFindKeyword(input);
+                TaskList matchingTasks = taskList.findTasks(keyword);
+                return ui.showMatchingTasks(matchingTasks);
+            } else if (Parser.isMarkCommand(input)) {
+                int taskIndex = Parser.parseMarkUnmarkDelete(input);
+                if (taskIndex >= taskList.getNumberOfTasks()) {
+                    throw new AeolianException(" There is no such task in the list.");
+                }
+                Task chosenTask = taskList.getTask(taskIndex);
+                chosenTask.markAsDone();
+                return ui.showMarkTaskSuccess(chosenTask);
+            } else if (Parser.isUnmarkCommand(input)) {
+                int taskIndex = Parser.parseMarkUnmarkDelete(input);
+                if (taskIndex >= taskList.getNumberOfTasks()) {
+                    throw new AeolianException(" There is no such task in the list.");
+                }
+                Task chosenTask = taskList.getTask(taskIndex);
+                chosenTask.unmarkAsDone();
+                return ui.showUnmarkTaskSuccess(chosenTask);
+            } else if (Parser.isDeleteCommand(input)) {
+                int taskIndex = Parser.parseMarkUnmarkDelete(input);
+                if (taskIndex >= taskList.getNumberOfTasks()) {
+                    throw new AeolianException(" There is no such task in the list.");
+                }
+                Task chosenTask = taskList.getTask(taskIndex);
+                taskList.removeTask(chosenTask);
+                return ui.showDeleteTaskSuccess(chosenTask, taskList);
+            } else {
+                throw new AeolianException(" I don't understand that command.");
+            }
+        } catch (AeolianException | IOException e) {
+            return ui.showException(e);
+        }
+    }
+
     /**
-     * Main method to start the Aeolian application.
+     * Returns the greeting message from Aeolian.
      *
-     * @param args Command line arguments.
+     * @return Greeting message.
      */
-    public static void main(String[] args) {
-        new Aeolian(FILE_PATH).run();
+    public String getGreetings() {
+        return ui.showGreetings();
     }
 
     /**
