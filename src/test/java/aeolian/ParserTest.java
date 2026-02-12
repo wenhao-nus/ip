@@ -116,6 +116,12 @@ public class ParserTest {
     }
 
     @Test
+    public void isHelpCommand_validInput_success() {
+        assertTrue(Parser.isHelpCommand("help"));
+        assertTrue(Parser.isHelpCommand(" help "));
+    }
+
+    @Test
     public void parseFindKeyword_validInput_success() throws AeolianException {
         assertEquals("book", Parser.parseFindKeyword("find book"));
         assertEquals("read book", Parser.parseFindKeyword("find  read book "));

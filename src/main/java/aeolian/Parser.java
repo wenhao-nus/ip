@@ -27,6 +27,17 @@ class Parser {
     }
 
     /**
+     * Checks if the user input is a "help" command.
+     *
+     * @param userInput Input string from the user.
+     * @return True if input is a "help" command, false otherwise.
+     */
+    public static boolean isHelpCommand(String userInput) {
+        assert userInput != null : "User input cannot be null";
+        return userInput.trim().equals("help");
+    }
+
+    /**
      * Checks if the user input is a type of task command.
      * A task command is a "todo", "deadline" or "event" command.
      *

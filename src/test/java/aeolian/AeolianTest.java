@@ -78,6 +78,12 @@ public class AeolianTest {
     }
 
     @Test
+    public void getResponse_help_success() {
+        String response = aeolian.getResponse("help");
+        assertTrue(response.contains("Here are the commands you can use:"));
+    }
+
+    @Test
     public void getResponse_bye_savesToFile() throws IOException {
         aeolian.getResponse("todo read book");
         aeolian.getResponse("bye");

@@ -40,6 +40,8 @@ class Aeolian {
             return handleBye();
         } else if (Parser.isListCommand(input)) {
             return handleList();
+        } else if (Parser.isHelpCommand(input)) {
+            return handleHelp();
         } else if (Parser.isTask(input)) {
             return handleAddTask(input);
         } else if (Parser.isFindCommand(input)) {
@@ -62,6 +64,10 @@ class Aeolian {
 
     private String handleList() {
         return ui.showAllTasks(taskList);
+    }
+
+    private String handleHelp() {
+        return ui.showHelp();
     }
 
     private String handleAddTask(String input) throws AeolianException {

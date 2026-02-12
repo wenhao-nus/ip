@@ -26,6 +26,25 @@ class Ui {
     }
 
     /**
+     * Displays a help message with all available commands.
+     *
+     * @return Help message.
+     */
+    public String showHelp() {
+        return " Here are the commands you can use:\n"
+                + "  - list: displays all tasks\n"
+                + "  - todo <description>: adds a todo task\n"
+                + "  - deadline <description> /by <yyyy-MM-dd>: adds a deadline task\n"
+                + "  - event <description> /from <yyyy-MM-dd> /to <yyyy-MM-dd>: adds an event task\n"
+                + "  - mark <index>: marks a task as done\n"
+                + "  - unmark <index>: marks a task as not done\n"
+                + "  - delete <index>: removes a task\n"
+                + "  - find <keyword>: finds tasks by keyword\n"
+                + "  - help: shows this help page\n"
+                + "  - bye: saves tasks and exits";
+    }
+
+    /**
      * Displays an error message based on the exception encountered.
      *
      * @param e The exception that occurred.
