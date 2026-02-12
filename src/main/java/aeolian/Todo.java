@@ -15,6 +15,16 @@ public class Todo extends Task {
     }
 
     /**
+     * Returns the task in a format suitable for file storage.
+     *
+     * @return File format string.
+     */
+    @Override
+    public String toFileFormat() {
+        return "T | " + (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
      * Returns a string representation of the todo task.
      *
      * @return String representation.

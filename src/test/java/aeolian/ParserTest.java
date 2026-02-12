@@ -39,10 +39,43 @@ public class ParserTest {
     }
 
     @Test
+    public void parseTask_deadlineInvalidDate_exceptionThrown() {
+        assertThrows(AeolianException.class, () -> {
+            Parser.parseTask("deadline return book /by 2023-02-30");
+        });
+    }
+
+    @Test
     public void parseTask_event_success() throws AeolianException {
         Task task = Parser.parseTask("event project meeting /from 2023-12-01 /to 2023-12-02");
         assertTrue(task instanceof Event);
         assertEquals("[E][ ] project meeting (from: Dec 01 2023 to: Dec 02 2023)", task.toString());
+    }
+
+    @Test
+    public void parseTask_eventWrongOrder_exceptionThrown() {
+        AeolianException exception = assertThrows(AeolianException.class, () -> {
+            Parser.parseTask("event project meeting /to 2023-12-02 /from 2023-12-01");
+        });
+        assertTrue(exception.getMessage().contains("Event must have /from yyyy-MM-dd and /to yyyy-MM-dd"));
+    }
+
+    @Test
+    public void parseTask_eventInvalidDates_exceptionThrown() {
+        assertThrows(AeolianException.class, () -> {
+            Parser.parseTask("event meeting /from 2023-13-01 /to 2023-12-01");
+        });
+        assertThrows(AeolianException.class, () -> {
+            Parser.parseTask("event meeting /from 2023-12-01 /to 2023-12-32");
+        });
+    }
+
+    @Test
+    public void parseTask_eventFromAfterTo_exceptionThrown() {
+        AeolianException exception = assertThrows(AeolianException.class, () -> {
+            Parser.parseTask("event project meeting /from 2023-10-16 /to 2023-10-15");
+        });
+        assertEquals(" The 'from' date must be before or equal to the 'to' date.", exception.getMessage());
     }
 
     @Test
@@ -66,6 +99,12 @@ public class ParserTest {
     public void parseMarkUnmarkDelete_invalidInput_exceptionThrown() {
         assertThrows(AeolianException.class, () -> {
             Parser.parseMarkUnmarkDelete("mark abc");
+        });
+        assertThrows(AeolianException.class, () -> {
+            Parser.parseMarkUnmarkDelete("mark");
+        });
+        assertThrows(AeolianException.class, () -> {
+            Parser.parseMarkUnmarkDelete("delete  ");
         });
     }
 

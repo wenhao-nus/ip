@@ -16,16 +16,32 @@ public class Event extends Task {
      * @param description Description of the event.
      * @param from Start date in yyyy-MM-dd format.
      * @param to End date in yyyy-MM-dd format.
-     * @throws AeolianException If the date format is invalid.
+     * @throws AeolianException If the date format is invalid or if the start date is after the end date.
      */
     public Event(String description, String from, String to) throws AeolianException {
         super(description);
+        assert from != null : "Event 'from' date string cannot be null";
+        assert to != null : "Event 'to' date string cannot be null";
         try {
             this.from = LocalDate.parse(from.trim()); // yyyy-MM-dd
             this.to = LocalDate.parse(to.trim()); // yyyy-MM-dd
         } catch (DateTimeParseException e) {
             throw new AeolianException(" Invalid date format! Use yyyy-MM-dd (e.g., 2019-10-15).");
         }
+
+        if (this.from.isAfter(this.to)) {
+            throw new AeolianException(" The 'from' date must be before or equal to the 'to' date.");
+        }
+    }
+
+    /**
+     * Returns the task in a format suitable for file storage.
+     *
+     * @return File format string.
+     */
+    @Override
+    public String toFileFormat() {
+        return "E | " + (isDone ? "1" : "0") + " | " + description + " | " + getFrom() + " | " + getTo();
     }
 
     /**

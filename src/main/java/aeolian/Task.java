@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Represents a task in the chatbot.
  */
-public class Task {
+public abstract class Task {
     protected static final DateTimeFormatter OUTPUT_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
     protected String description;
@@ -63,6 +63,13 @@ public class Task {
     public void unmarkAsDone() {
         this.isDone = false;
     }
+
+    /**
+     * Returns the task in a format suitable for file storage.
+     *
+     * @return File format string.
+     */
+    public abstract String toFileFormat();
 
     /**
      * Returns a string representation of the task.

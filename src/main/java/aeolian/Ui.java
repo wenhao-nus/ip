@@ -6,8 +6,6 @@ import java.io.IOException;
  * Deals with output interactions with the user.
  */
 public class Ui {
-    private static final String HORIZONTAL_LINE =
-            "____________________________________________________________\n";
 
     /**
      * Displays a greeting message to the user.
@@ -37,11 +35,11 @@ public class Ui {
         assert e != null : "Exception cannot be null";
         if (e instanceof AeolianException) {
             return e.getMessage();
-        } else if (e instanceof IOException) {
-            return "IO error.";
-        } else {
-            return "An error has occurred.";
         }
+        if (e instanceof IOException) {
+            return "IO error.";
+        }
+        return "An error has occurred.";
     }
 
     /**
@@ -51,13 +49,7 @@ public class Ui {
      * @return List of all tasks.
      */
     public String showAllTasks(TaskList taskList) {
-        assert taskList != null : "TaskList cannot be null";
-        StringBuilder sb = new StringBuilder(" Here are the tasks in your list:\n");
-        for (int i = 0; i < taskList.getNumberOfTasks(); i++) {
-            Task currentTask = taskList.getTask(i);
-            sb.append(" ").append(i + 1).append(".").append(currentTask).append("\n");
-        }
-        return sb.toString().trim();
+        return formatTaskList(" Here are the tasks in your list:\n", taskList);
     }
 
     /**
@@ -70,9 +62,8 @@ public class Ui {
     public String showAddTaskSuccess(Task newTask, TaskList taskList) {
         assert newTask != null : "Task cannot be null";
         assert taskList != null : "TaskList cannot be null";
-        return " Got it. I've added this task:\n"
-                + "   " + newTask + "\n" + " Now you have "
-                + taskList.getNumberOfTasks() + " tasks in the list.";
+        return String.format(" Got it. I've added this task:\n   %s\n Now you have %d tasks in the list.",
+                newTask, taskList.getNumberOfTasks());
     }
 
     /**
@@ -82,8 +73,8 @@ public class Ui {
      * @return Success message.
      */
     public String showMarkTaskSuccess(Task chosenTask) {
-        return " Nice! I've marked this task as done:\n"
-                + "   " + chosenTask;
+        assert chosenTask != null : "Task cannot be null";
+        return String.format(" Nice! I've marked this task as done:\n   %s", chosenTask);
     }
 
     /**
@@ -93,8 +84,8 @@ public class Ui {
      * @return Success message.
      */
     public String showUnmarkTaskSuccess(Task chosenTask) {
-        return " OK, I've marked this task as not done yet:\n"
-                + "   " + chosenTask;
+        assert chosenTask != null : "Task cannot be null";
+        return String.format(" OK, I've marked this task as not done yet:\n   %s", chosenTask);
     }
 
     /**
@@ -105,9 +96,10 @@ public class Ui {
      * @return Success message.
      */
     public String showDeleteTaskSuccess(Task chosenTask, TaskList taskList) {
-        return " Noted. I've removed this task:\n   " + chosenTask + "\n"
-                + " Now you have "
-                + taskList.getNumberOfTasks() + " tasks in the list.";
+        assert chosenTask != null : "Task cannot be null";
+        assert taskList != null : "TaskList cannot be null";
+        return String.format(" Noted. I've removed this task:\n   %s\n Now you have %d tasks in the list.",
+                chosenTask, taskList.getNumberOfTasks());
     }
 
     /**
@@ -117,11 +109,19 @@ public class Ui {
      * @return List of matching tasks.
      */
     public String showMatchingTasks(TaskList matchingTasks) {
-        StringBuilder sb = new StringBuilder(" Here are the matching tasks in your list:\n");
-        for (int i = 0; i < matchingTasks.getNumberOfTasks(); i++) {
-            Task currentTask = matchingTasks.getTask(i);
-            sb.append(" ").append(i + 1).append(".").append(currentTask).append("\n");
+        return formatTaskList(" Here are the matching tasks in your list:\n", matchingTasks);
+    }
+
+    private String formatTaskList(String header, TaskList taskList) {
+        assert taskList != null : "TaskList cannot be null";
+        StringBuilder sb = new StringBuilder(header);
+        for (int i = 0; i < taskList.getNumberOfTasks(); i++) {
+            sb.append(formatTaskLine(i + 1, taskList.getTask(i)));
         }
         return sb.toString().trim();
+    }
+
+    private String formatTaskLine(int index, Task task) {
+        return String.format(" %d.%s\n", index, task);
     }
 }
