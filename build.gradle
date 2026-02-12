@@ -48,6 +48,10 @@ test {
     }
 }
 
+run {
+    enableAssertions = true
+}
+
 application {
     mainClass.set("Launcher")
 }
