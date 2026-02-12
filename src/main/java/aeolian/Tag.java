@@ -1,5 +1,0 @@
-package aeolian;
-
-class Tag {
-
-}
