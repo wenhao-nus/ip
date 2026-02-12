@@ -20,6 +20,7 @@ public class Storage {
      */
     public Storage(String filePath) {
         this.taskList = loadTasksFromFile(filePath);
+        assert this.taskList != null : "loadTasksFromFile should always return a TaskList object";
         this.filePath = filePath;
     }
 
@@ -49,6 +50,7 @@ public class Storage {
      */
     private TaskList loadTasksFromFile(String filePath) {
         TaskList tasks = new TaskList();
+        assert tasks != null;
         File file = new File(filePath);
         if (!file.exists()) {
             return tasks; // first run, nothing to load
@@ -174,6 +176,7 @@ public class Storage {
             Event e = (Event) t;
             return "E | " + done + " | " + e.getDescription() + " | " + e.getFrom() + " | " + e.getTo();
         } else {
+            assert t instanceof Todo : "Task should be a Todo if it's not Deadline or Event";
             return "T | " + done + " | " + t.getDescription();
         }
     }
