@@ -34,6 +34,7 @@ public class Ui {
      * @return Error message.
      */
     public String showException(Exception e) {
+        assert e != null : "Exception cannot be null";
         if (e instanceof AeolianException) {
             return e.getMessage();
         } else if (e instanceof IOException) {
@@ -50,6 +51,7 @@ public class Ui {
      * @return List of all tasks.
      */
     public String showAllTasks(TaskList taskList) {
+        assert taskList != null : "TaskList cannot be null";
         StringBuilder sb = new StringBuilder(" Here are the tasks in your list:\n");
         for (int i = 0; i < taskList.getNumberOfTasks(); i++) {
             Task currentTask = taskList.getTask(i);
@@ -66,6 +68,8 @@ public class Ui {
      * @return Success message.
      */
     public String showAddTaskSuccess(Task newTask, TaskList taskList) {
+        assert newTask != null : "Task cannot be null";
+        assert taskList != null : "TaskList cannot be null";
         return " Got it. I've added this task:\n"
                 + "   " + newTask + "\n" + " Now you have "
                 + taskList.getNumberOfTasks() + " tasks in the list.";

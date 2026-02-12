@@ -23,6 +23,9 @@ public class Aeolian {
     }
 
     public String getResponse(String input) {
+        assert storage != null : "Storage should be initialized";
+        assert taskList != null : "TaskList should be initialized";
+        assert ui != null : "Ui should be initialized";
         try {
             if (Parser.isByeCommand(input)) {
                 storage.save();
@@ -35,6 +38,7 @@ public class Aeolian {
                 return ui.showAddTaskSuccess(newTask, taskList);
             } else if (Parser.isFindCommand(input)) {
                 String keyword = Parser.parseFindKeyword(input);
+                assert keyword != null || !keyword.isEmpty() : "Keyword should not be null";
                 TaskList matchingTasks = taskList.findTasks(keyword);
                 return ui.showMatchingTasks(matchingTasks);
             } else if (Parser.isMarkCommand(input)) {

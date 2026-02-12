@@ -45,6 +45,7 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
+        assert aeolian != null : "Aeolian instance must be set before use";
         String input = userInput.getText();
         String response = aeolian.getResponse(input);
         dialogContainer.getChildren().addAll(

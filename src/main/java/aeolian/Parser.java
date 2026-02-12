@@ -151,6 +151,7 @@ public class Parser {
 
             return new Deadline(description, by); // parses yyyy-MM-dd
         } else {
+            assert parts[0].equals("event") : "Command should be event";
             int fromIndex = userInput.indexOf(" /from ");
             int toIndex = userInput.indexOf(" /to ");
             if (fromIndex == -1 || toIndex == -1 || toIndex < fromIndex) {
