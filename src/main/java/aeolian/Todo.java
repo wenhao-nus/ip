@@ -3,7 +3,7 @@ package aeolian;
 /**
  * Represents a todo task.
  */
-public class Todo extends Task {
+class Todo extends Task {
 
     /**
      * Constructs a Todo task with the given description.

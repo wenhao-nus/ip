@@ -1,5 +1,4 @@
-import aeolian.Aeolian;
-import aeolian.Parser;
+package aeolian;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

@@ -9,7 +9,7 @@ import java.util.Scanner;
 /**
  * Deals with loading tasks from a file on disk and saving tasks in a file.
  */
-public class Storage {
+class Storage {
     private final TaskList taskList;
     private final String filePath;
 

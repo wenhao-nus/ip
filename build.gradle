@@ -53,7 +53,7 @@ run {
 }
 
 application {
-    mainClass.set("Launcher")
+    mainClass.set("aeolian.Launcher")
 }
 
 shadowJar {

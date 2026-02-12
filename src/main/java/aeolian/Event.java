@@ -6,7 +6,7 @@ import java.time.format.DateTimeParseException;
 /**
  * Represents an event task with a start and end date.
  */
-public class Event extends Task {
+class Event extends Task {
     private final LocalDate from;
     private final LocalDate to;
 

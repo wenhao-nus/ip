@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Represents the main chatbot class Aeolian.
  */
-public class Aeolian {
+class Aeolian {
     private Storage storage;
     private TaskList taskList;
     private Ui ui;

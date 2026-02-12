@@ -1,6 +1,6 @@
+package aeolian;
 import java.io.IOException;
 
-import aeolian.Aeolian;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

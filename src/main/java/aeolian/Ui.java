@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Deals with output interactions with the user.
  */
-public class Ui {
+class Ui {
 
     /**
      * Displays a greeting message to the user.

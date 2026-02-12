@@ -3,7 +3,7 @@ package aeolian;
 /**
  * Represents an exception specific to the Aeolian chatbot.
  */
-public class AeolianException extends Exception {
+class AeolianException extends Exception {
     /**
      * Constructs an AeolianException with the specified error message.
      *

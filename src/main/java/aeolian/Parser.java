@@ -3,7 +3,7 @@ package aeolian;
 /**
  * Deals with making sense of the user command.
  */
-public class Parser {
+class Parser {
     /**
      * Checks if the user input is a "bye" command.
      *
