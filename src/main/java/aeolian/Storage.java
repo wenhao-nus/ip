@@ -49,35 +49,35 @@ public class Storage {
      * @return A TaskList initialized with tasks parsed from the file.
      */
     private TaskList loadTasksFromFile(String filePath) {
-        TaskList tasks = new TaskList();
-        assert tasks != null;
         File file = new File(filePath);
+        TaskList tasks = new TaskList();
+
         if (!file.exists()) {
-            return tasks; // first run, nothing to load
+            return tasks;
         }
 
-        try {
-            Scanner fileScanner = new Scanner(file);
+        try (Scanner fileScanner = new Scanner(file)) {
             while (fileScanner.hasNextLine()) {
-                String line = fileScanner.nextLine().trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
-
-                try {
-                    Task t = parseTaskLine(line);
-                    if (t != null) {
-                        tasks.addTask(t);
-                    }
-                } catch (Exception corruptedLine) {
-                    System.out.println("Corrupted line from storage, skipping it.");
-                }
+                loadLine(fileScanner.nextLine(), tasks);
             }
-            fileScanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("Error reading tasks from file.");
         }
         return tasks;
+    }
+
+    private void loadLine(String line, TaskList tasks) {
+        String trimmedLine = line.trim();
+        if (trimmedLine.isEmpty()) {
+            return;
+        }
+
+        try {
+            Task t = parseTaskLine(trimmedLine);
+            tasks.addTask(t);
+        } catch (Exception e) {
+            System.out.println("Corrupted line from storage, skipping it.");
+        }
     }
 
     /**
@@ -88,30 +88,35 @@ public class Storage {
      * @throws IOException If there is an error while writing to the file.
      */
     private void saveTasksToFile(String filePath, TaskList tasks) throws IOException {
+        assert filePath != null : "File path cannot be null";
+        assert tasks != null : "TaskList cannot be null";
+        ensureParentDirectoryExists(filePath);
+
+        try (FileWriter fw = new FileWriter(filePath)) {
+            for (int i = 0; i < tasks.getNumberOfTasks(); i++) {
+                fw.write(tasks.getTask(i).toFileFormat());
+                fw.write(System.lineSeparator()); // add newline in cross-platform way
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing tasks to file.");
+        }
+    }
+
+    private void ensureParentDirectoryExists(String filePath) {
         File file = new File(filePath);
-
-        File parent = file.getParentFile(); // referring to ./data
+        File parent = file.getParentFile();
         if (parent != null && !parent.exists()) {
-            parent.mkdirs(); // create ./data if missing
+            parent.mkdirs();
         }
-
-        FileWriter fw = new FileWriter(file); // overwrite
-        for (int i = 0; i < tasks.getNumberOfTasks(); i++) {
-            fw.write(serializeTask(tasks.getTask(i)));
-            fw.write(System.lineSeparator()); // add newline in cross-platform way
-        }
-        fw.close();
     }
 
     /**
      * Parses a single serialized task line into a Task.
      *
-     * <p>Expected formats:
-     * <pre>
+     * Expected formats:
      * T | 0/1 | desc
      * D | 0/1 | desc | by
      * E | 0/1 | desc | from | to
-     * </pre>
      *
      * @param line The line to parse.
      * @return The Task represented by the line.
@@ -119,66 +124,61 @@ public class Storage {
      * @throws IllegalArgumentException If the line is malformed or the type is unknown.
      */
     private Task parseTaskLine(String line) throws AeolianException {
-        // Format:
-        // T | 0/1 | desc
-        // D | 0/1 | desc | by
-        // E | 0/1 | desc | from | to
         String[] parts = line.split("\\s*\\|\\s*");
+        return createTask(parts);
+    }
+
+    private void validateBasicFormat(String[] parts) {
         if (parts.length < 3) {
-            throw new IllegalArgumentException("Bad line");
+            throw new IllegalArgumentException("Bad line format in storage.");
         }
+    }
+
+    private Task createTask(String[] parts) throws AeolianException {
+        assert parts != null : "Parts array cannot be null";
+        validateBasicFormat(parts);
 
         String type = parts[0];
-        boolean isDone = parts[1].equals("1");
-        String desc = parts[2];
-
         Task task;
         switch (type) {
         case "T":
-            task = new Todo(desc);
+            task = createTodo(parts);
             break;
         case "D":
-            if (parts.length < 4) {
-                throw new IllegalArgumentException("Bad deadline line.");
-            }
-            task = new Deadline(desc, parts[3]);
+            task = createDeadline(parts);
             break;
         case "E":
-            if (parts.length < 5) {
-                throw new IllegalArgumentException("Bad event line.");
-            }
-            task = new Event(desc, parts[3], parts[4]);
+            task = createEvent(parts);
             break;
         default:
-            throw new IllegalArgumentException("Unknown task type.");
+            throw new IllegalArgumentException("Unknown task type in storage: " + type);
         }
 
-        if (isDone) {
+        if (parts[1].equals("1")) {
             task.markAsDone();
         }
         return task;
     }
 
-    /**
-     * Serializes a task into its storage line format.
-     *
-     * @param t The task to serialize.
-     * @return A single-line string representation suitable for storage.
-     */
-    private String serializeTask(Task t) {
-        String done = t.isDone() ? "1" : "0";
-        if (t instanceof Todo) {
-            return "T | " + done + " | " + t.getDescription();
-        } else if (t instanceof Deadline) {
-            Deadline d = (Deadline) t;
-            return "D | " + done + " | " + d.getDescription() + " | " + d.getBy();
-        } else if (t instanceof Event) {
-            Event e = (Event) t;
-            return "E | " + done + " | " + e.getDescription() + " | " + e.getFrom() + " | " + e.getTo();
-        } else {
-            assert t instanceof Todo : "Task should be a Todo if it's not Deadline or Event";
-            return "T | " + done + " | " + t.getDescription();
+    private Task createTodo(String[] parts) {
+        assert parts != null && parts.length >= 3 : "Parts array must have at least 3 elements for Todo";
+        return new Todo(parts[2]);
+    }
+
+    private Task createDeadline(String[] parts) throws AeolianException {
+        assert parts != null : "Parts array cannot be null";
+        if (parts.length < 4) {
+            throw new IllegalArgumentException("Bad deadline format in storage.");
         }
+        return new Deadline(parts[2], parts[3]);
+    }
+
+    private Task createEvent(String[] parts) throws AeolianException {
+        assert parts != null : "Parts array cannot be null";
+        if (parts.length < 5) {
+            throw new IllegalArgumentException("Bad event format in storage.");
+        }
+        return new Event(parts[2], parts[3], parts[4]);
     }
 }
 

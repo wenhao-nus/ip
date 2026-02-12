@@ -18,11 +18,22 @@ public class Deadline extends Task {
      */
     public Deadline(String description, String by) throws AeolianException {
         super(description);
+        assert by != null : "Deadline date string cannot be null";
         try {
             this.by = LocalDate.parse(by.trim()); // expects yyyy-MM-dd
         } catch (DateTimeParseException e) {
             throw new AeolianException(" Invalid date format! Use yyyy-MM-dd (e.g., 2019-10-15).");
         }
+    }
+
+    /**
+     * Returns the task in a format suitable for file storage.
+     *
+     * @return File format string.
+     */
+    @Override
+    public String toFileFormat() {
+        return "D | " + (isDone ? "1" : "0") + " | " + description + " | " + getBy();
     }
 
     /**

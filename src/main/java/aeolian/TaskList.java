@@ -62,6 +62,7 @@ public class TaskList {
      * @return A TaskList with all matching tasks; empty if none match.
      */
     public TaskList findTasks(String keyword) {
+        assert keyword != null : "Keyword cannot be null";
         TaskList matchingTasks = new TaskList();
         for (Task task : tasks) {
             if (task.getDescription().contains(keyword)) {

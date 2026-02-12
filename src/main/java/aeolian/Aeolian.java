@@ -1,7 +1,6 @@
 package aeolian;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 /**
  * Represents the main chatbot class Aeolian.
@@ -20,6 +19,9 @@ public class Aeolian {
         this.storage = new Storage(filePath);
         this.taskList = this.storage.getTaskList();
         this.ui = new Ui();
+        assert storage != null : "Storage should be initialized";
+        assert taskList != null : "TaskList should be initialized";
+        assert ui != null : "Ui should be initialized";
     }
 
     public String getResponse(String input) {
@@ -27,49 +29,81 @@ public class Aeolian {
         assert taskList != null : "TaskList should be initialized";
         assert ui != null : "Ui should be initialized";
         try {
-            if (Parser.isByeCommand(input)) {
-                storage.save();
-                return ui.showGoodbye();
-            } else if (Parser.isListCommand(input)) {
-                return ui.showAllTasks(taskList);
-            } else if (Parser.isTask(input)) {
-                Task newTask = Parser.parseTask(input);
-                taskList.addTask(newTask);
-                return ui.showAddTaskSuccess(newTask, taskList);
-            } else if (Parser.isFindCommand(input)) {
-                String keyword = Parser.parseFindKeyword(input);
-                assert keyword != null || !keyword.isEmpty() : "Keyword should not be null";
-                TaskList matchingTasks = taskList.findTasks(keyword);
-                return ui.showMatchingTasks(matchingTasks);
-            } else if (Parser.isMarkCommand(input)) {
-                int taskIndex = Parser.parseMarkUnmarkDelete(input);
-                if (taskIndex >= taskList.getNumberOfTasks()) {
-                    throw new AeolianException(" There is no such task in the list.");
-                }
-                Task chosenTask = taskList.getTask(taskIndex);
-                chosenTask.markAsDone();
-                return ui.showMarkTaskSuccess(chosenTask);
-            } else if (Parser.isUnmarkCommand(input)) {
-                int taskIndex = Parser.parseMarkUnmarkDelete(input);
-                if (taskIndex >= taskList.getNumberOfTasks()) {
-                    throw new AeolianException(" There is no such task in the list.");
-                }
-                Task chosenTask = taskList.getTask(taskIndex);
-                chosenTask.unmarkAsDone();
-                return ui.showUnmarkTaskSuccess(chosenTask);
-            } else if (Parser.isDeleteCommand(input)) {
-                int taskIndex = Parser.parseMarkUnmarkDelete(input);
-                if (taskIndex >= taskList.getNumberOfTasks()) {
-                    throw new AeolianException(" There is no such task in the list.");
-                }
-                Task chosenTask = taskList.getTask(taskIndex);
-                taskList.removeTask(chosenTask);
-                return ui.showDeleteTaskSuccess(chosenTask, taskList);
-            } else {
-                throw new AeolianException(" I don't understand that command.");
-            }
+            return processCommand(input);
         } catch (AeolianException | IOException e) {
             return ui.showException(e);
+        }
+    }
+
+    private String processCommand(String input) throws AeolianException, IOException {
+        if (Parser.isByeCommand(input)) {
+            return handleBye();
+        } else if (Parser.isListCommand(input)) {
+            return handleList();
+        } else if (Parser.isTask(input)) {
+            return handleAddTask(input);
+        } else if (Parser.isFindCommand(input)) {
+            return handleFind(input);
+        } else if (Parser.isMarkCommand(input)) {
+            return handleMark(input);
+        } else if (Parser.isUnmarkCommand(input)) {
+            return handleUnmark(input);
+        } else if (Parser.isDeleteCommand(input)) {
+            return handleDelete(input);
+        } else {
+            throw new AeolianException(" I don't understand that command.");
+        }
+    }
+
+    private String handleBye() throws IOException {
+        storage.save();
+        return ui.showGoodbye();
+    }
+
+    private String handleList() {
+        return ui.showAllTasks(taskList);
+    }
+
+    private String handleAddTask(String input) throws AeolianException {
+        Task newTask = Parser.parseTask(input);
+        taskList.addTask(newTask);
+        return ui.showAddTaskSuccess(newTask, taskList);
+    }
+
+    private String handleFind(String input) throws AeolianException {
+        String keyword = Parser.parseFindKeyword(input);
+        assert keyword != null && !keyword.isEmpty() : "Keyword should not be null or empty";
+        TaskList matchingTasks = taskList.findTasks(keyword);
+        return ui.showMatchingTasks(matchingTasks);
+    }
+
+    private String handleMark(String input) throws AeolianException {
+        int taskIndex = Parser.parseMarkUnmarkDelete(input);
+        validateTaskIndex(taskIndex);
+        Task chosenTask = taskList.getTask(taskIndex);
+        chosenTask.markAsDone();
+        return ui.showMarkTaskSuccess(chosenTask);
+    }
+
+    private String handleUnmark(String input) throws AeolianException {
+        int taskIndex = Parser.parseMarkUnmarkDelete(input);
+        validateTaskIndex(taskIndex);
+        Task chosenTask = taskList.getTask(taskIndex);
+        chosenTask.unmarkAsDone();
+        return ui.showUnmarkTaskSuccess(chosenTask);
+    }
+
+    private String handleDelete(String input) throws AeolianException {
+        int taskIndex = Parser.parseMarkUnmarkDelete(input);
+        validateTaskIndex(taskIndex);
+        Task chosenTask = taskList.getTask(taskIndex);
+        taskList.removeTask(chosenTask);
+        return ui.showDeleteTaskSuccess(chosenTask, taskList);
+    }
+
+    private void validateTaskIndex(int index) throws AeolianException {
+        if (index < 0 || index >= taskList.getNumberOfTasks()) {
+            throw new AeolianException(" There is no such task in the list.");
         }
     }
 
@@ -80,74 +114,5 @@ public class Aeolian {
      */
     public String getGreetings() {
         return ui.showGreetings();
-    }
-
-    /**
-     * Runs the main loop of the application, processing user commands.
-     */
-    public void run() {
-        Scanner sc = new Scanner(System.in);
-
-        ui.showGreetings();
-        String userInput = sc.nextLine();
-
-        while (!Parser.isByeCommand(userInput)) {
-            if (Parser.isListCommand(userInput)) {
-                ui.showAllTasks(taskList);
-            } else {
-                try {
-                    if (Parser.isTask(userInput)) {
-                        Task newTask = Parser.parseTask(userInput);
-                        taskList.addTask(newTask);
-                        ui.showAddTaskSuccess(newTask, taskList);
-                    } else if (Parser.isFindCommand(userInput)) {
-                        String keyword = Parser.parseFindKeyword(userInput);
-                        TaskList matchingTasks = taskList.findTasks(keyword);
-                        ui.showMatchingTasks(matchingTasks);
-                    } else if (Parser.isMarkCommand(userInput)) {
-                        int taskIndex = Parser.parseMarkUnmarkDelete(userInput);
-                        if (taskIndex >= taskList.getNumberOfTasks()) {
-                            throw new AeolianException(" There is no such task in the list.");
-                        }
-
-                        Task chosenTask = taskList.getTask(taskIndex);
-                        chosenTask.markAsDone();
-                        ui.showMarkTaskSuccess(chosenTask);
-                    } else if (Parser.isUnmarkCommand(userInput)) {
-                        int taskIndex = Parser.parseMarkUnmarkDelete(userInput);
-                        if (taskIndex >= taskList.getNumberOfTasks()) {
-                            throw new AeolianException(" There is no such task in the list.");
-                        }
-
-                        Task chosenTask = taskList.getTask(taskIndex);
-                        chosenTask.unmarkAsDone();
-                        ui.showUnmarkTaskSuccess(chosenTask);
-                    } else if (Parser.isDeleteCommand(userInput)) {
-                        int taskIndex = Parser.parseMarkUnmarkDelete(userInput);
-                        if (taskIndex >= taskList.getNumberOfTasks()) {
-                            throw new AeolianException(" There is no such task in the list.");
-                        }
-
-                        Task chosenTask = taskList.getTask(taskIndex);
-                        taskList.removeTask(chosenTask);
-                        ui.showDeleteTaskSuccess(chosenTask, taskList);
-                    } else {
-                        throw new AeolianException(" I don't understand that command.");
-                    }
-                } catch (AeolianException e) {
-                    ui.showException(e);
-                }
-            }
-            userInput = sc.nextLine();
-        }
-
-        try {
-            storage.save();
-        } catch (IOException e) {
-            ui.showException(e);
-        }
-
-        ui.showGoodbye();
-        sc.close();
     }
 }
