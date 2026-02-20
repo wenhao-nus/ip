@@ -36,22 +36,23 @@ class Aeolian {
     }
 
     private String processCommand(String input) throws AeolianException, IOException {
-        if (Parser.isByeCommand(input)) {
+        String normalizedInput = input.trim();
+        if (Parser.isByeCommand(normalizedInput)) {
             return handleBye();
-        } else if (Parser.isListCommand(input)) {
+        } else if (Parser.isListCommand(normalizedInput)) {
             return handleList();
-        } else if (Parser.isHelpCommand(input)) {
+        } else if (Parser.isHelpCommand(normalizedInput)) {
             return handleHelp();
-        } else if (Parser.isTask(input)) {
-            return handleAddTask(input);
-        } else if (Parser.isFindCommand(input)) {
-            return handleFind(input);
-        } else if (Parser.isMarkCommand(input)) {
-            return handleMark(input);
-        } else if (Parser.isUnmarkCommand(input)) {
-            return handleUnmark(input);
-        } else if (Parser.isDeleteCommand(input)) {
-            return handleDelete(input);
+        } else if (Parser.isTask(normalizedInput)) {
+            return handleAddTask(normalizedInput);
+        } else if (Parser.isFindCommand(normalizedInput)) {
+            return handleFind(normalizedInput);
+        } else if (Parser.isMarkCommand(normalizedInput)) {
+            return handleMark(normalizedInput);
+        } else if (Parser.isUnmarkCommand(normalizedInput)) {
+            return handleUnmark(normalizedInput);
+        } else if (Parser.isDeleteCommand(normalizedInput)) {
+            return handleDelete(normalizedInput);
         } else {
             throw new AeolianException(" I don't understand that command.");
         }

@@ -4,6 +4,18 @@ package aeolian;
  * Deals with making sense of the user command.
  */
 class Parser {
+    private static boolean isCommandWord(String userInput, String command) {
+        assert userInput != null : "User input cannot be null";
+        String trimmed = userInput.trim();
+        if (!trimmed.startsWith(command)) {
+            return false;
+        }
+        if (trimmed.length() == command.length()) {
+            return true;
+        }
+        return Character.isWhitespace(trimmed.charAt(command.length()));
+    }
+
     /**
      * Checks if the user input is a "bye" command.
      *
@@ -46,7 +58,9 @@ class Parser {
      */
     public static boolean isTask(String userInput) {
         assert userInput != null : "User input cannot be null";
-        return (userInput.startsWith("todo") || userInput.startsWith("deadline") || userInput.startsWith("event"));
+        return isCommandWord(userInput, "todo")
+                || isCommandWord(userInput, "deadline")
+                || isCommandWord(userInput, "event");
     }
 
     /**
@@ -57,7 +71,7 @@ class Parser {
      */
     public static boolean isMarkCommand(String userInput) {
         assert userInput != null : "User input cannot be null";
-        return userInput.startsWith("mark");
+        return isCommandWord(userInput, "mark");
     }
 
     /**
@@ -68,7 +82,7 @@ class Parser {
      */
     public static boolean isDeleteCommand(String userInput) {
         assert userInput != null : "User input cannot be null";
-        return userInput.startsWith("delete");
+        return isCommandWord(userInput, "delete");
     }
 
     /**
@@ -79,7 +93,7 @@ class Parser {
      */
     public static boolean isUnmarkCommand(String userInput) {
         assert userInput != null : "User input cannot be null";
-        return userInput.startsWith("unmark");
+        return isCommandWord(userInput, "unmark");
     }
 
     /**
@@ -90,7 +104,7 @@ class Parser {
      */
     public static boolean isFindCommand(String userInput) {
         assert userInput != null : "User input cannot be null";
-        return userInput.startsWith("find");
+        return isCommandWord(userInput, "find");
     }
 
     /**
@@ -105,10 +119,14 @@ class Parser {
      */
     public static String parseFindKeyword(String userInput) throws AeolianException {
         assert userInput != null : "User input cannot be null";
-        if (userInput.trim().equals("find")) {
+        String trimmed = userInput.trim();
+        if (!isFindCommand(trimmed)) {
+            throw new AeolianException(" I don't understand that command.");
+        }
+        if (trimmed.equals("find")) {
             throw new AeolianException(" The keyword for find cannot be empty.");
         }
-        String keyword = userInput.substring(5).trim();
+        String keyword = trimmed.substring(4).trim();
         if (keyword.isEmpty()) {
             throw new AeolianException(" The keyword for find cannot be empty.");
         }
@@ -124,9 +142,9 @@ class Parser {
      */
     public static int parseMarkUnmarkDelete(String userInput) throws AeolianException {
         assert userInput != null : "User input cannot be null";
-        if (userInput.matches("mark \\d+") || userInput.matches("unmark \\d+")
-                || userInput.matches("delete \\d+")) {
-            return Integer.parseInt(userInput.split(" ")[1]) - 1;
+        String trimmed = userInput.trim();
+        if (trimmed.matches("(mark|unmark|delete)\\s+\\d+")) {
+            return Integer.parseInt(trimmed.split("\\s+")[1]) - 1;
         } else {
             throw new AeolianException(" I don't understand that command.");
         }
@@ -141,13 +159,14 @@ class Parser {
      */
     public static Task parseTask(String userInput) throws AeolianException {
         assert userInput != null : "User input cannot be null";
-        String command = userInput.split(" ")[0];
+        String trimmed = userInput.trim();
+        String command = trimmed.split("\\s+", 2)[0];
         if (command.equals("todo")) {
-            return parseTodo(userInput);
+            return parseTodo(trimmed);
         } else if (command.equals("deadline")) {
-            return parseDeadline(userInput);
+            return parseDeadline(trimmed);
         } else if (command.equals("event")) {
-            return parseEvent(userInput);
+            return parseEvent(trimmed);
         } else {
             throw new AeolianException(" I don't understand that command.");
         }

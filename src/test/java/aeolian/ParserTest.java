@@ -1,6 +1,7 @@
 package aeolian;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -93,6 +94,7 @@ public class ParserTest {
         assertEquals(0, Parser.parseMarkUnmarkDelete("mark 1"));
         assertEquals(4, Parser.parseMarkUnmarkDelete("unmark 5"));
         assertEquals(9, Parser.parseMarkUnmarkDelete("delete 10"));
+        assertEquals(0, Parser.parseMarkUnmarkDelete("  mark   1  "));
     }
 
     @Test
@@ -106,6 +108,9 @@ public class ParserTest {
         assertThrows(AeolianException.class, () -> {
             Parser.parseMarkUnmarkDelete("delete  ");
         });
+        assertThrows(AeolianException.class, () -> {
+            Parser.parseMarkUnmarkDelete("markx 1");
+        });
     }
 
     @Test
@@ -113,6 +118,8 @@ public class ParserTest {
         assertTrue(Parser.isFindCommand("find book"));
         assertTrue(Parser.isFindCommand("find "));
         assertTrue(Parser.isFindCommand("find"));
+        assertTrue(Parser.isFindCommand("  find   book"));
+        assertFalse(Parser.isFindCommand("findbook"));
     }
 
     @Test
@@ -125,6 +132,7 @@ public class ParserTest {
     public void parseFindKeyword_validInput_success() throws AeolianException {
         assertEquals("book", Parser.parseFindKeyword("find book"));
         assertEquals("read book", Parser.parseFindKeyword("find  read book "));
+        assertEquals("book", Parser.parseFindKeyword("  find   book  "));
     }
 
     @Test
@@ -135,5 +143,13 @@ public class ParserTest {
         assertThrows(AeolianException.class, () -> {
             Parser.parseFindKeyword("find   ");
         });
+    }
+
+    @Test
+    public void parseFindKeyword_invalidCommand_exceptionThrown() {
+        AeolianException exception = assertThrows(AeolianException.class, () -> {
+            Parser.parseFindKeyword("findbook");
+        });
+        assertEquals(" I don't understand that command.", exception.getMessage());
     }
 }
