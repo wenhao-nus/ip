@@ -10,7 +10,8 @@
   - More robust parsing for `mark`/`unmark`/`delete` with flexible spaces.
   - Storage save error propagation (no longer silently swallowed in save).
   - Centralized goodbye text in `Ui` as a shared constant so UI and window exit check stay in sync.
-- Updated tests in `src/test/java/aeolian/` and verified all tests pass.
+- Added tests in `src/test/java/aeolian/` and verified all tests pass.
+- Improved codebase through minor refactoring.
 
 ## Production Methods Changed by AI
 - `src/main/java/aeolian/Aeolian.java`: `processCommand(String input)`
@@ -33,5 +34,6 @@
   - Wrote tests for many different cases quickly.
 - What did not work / friction:
   - Running Gradle tests required elevated access to `~/.gradle` in this environment.
+  - Some terminal commands were run, and it could be difficult to understand what these commands were doing.
 - Time saved (estimate):
-  - Roughly 45-90 minutes versus fully manual investigation, patching, and validation.
+  - Roughly 90 minutes versus fully manual investigation, patching, and validation.
