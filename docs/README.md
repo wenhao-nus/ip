@@ -1,9 +1,9 @@
 # Aeolian User Guide
 
-![Aeolian UI](Ui.png)
-
 Aeolian is a desktop chatbot app for managing tasks.  
-It supports todos, deadlines, and events, with task data saved to disk.
+It supports 3 types of tasks: todos, deadlines, and events, and the task data saved to disk for future sessions.
+
+![Aeolian UI](Ui.png)
 
 ## Quick Start
 
