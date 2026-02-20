@@ -34,7 +34,7 @@ public class MainWindow extends AnchorPane {
     public void setAeolian(Aeolian a) {
         aeolian = a;
         dialogContainer.getChildren().addAll(
-                DialogBox.getDukeDialog(aeolian.getGreetings(), aeolianImage)
+                DialogBox.getAeolianDialog(aeolian.getGreetings(), aeolianImage)
         );
     }
 
@@ -49,7 +49,7 @@ public class MainWindow extends AnchorPane {
         String response = aeolian.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, aeolianImage)
+                DialogBox.getAeolianDialog(response, aeolianImage)
         );
         userInput.clear();
 

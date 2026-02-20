@@ -1,18 +1,56 @@
-# Aeolian project template
+# Aeolian Chatbot
 
-This is a project template for a greenfield Java project. It's named after the Java mascot _Duke_. Given below are instructions on how to use it.
+Aeolian is a task-management chatbot written in Java with persistence storage for the tasks.
 
-## Setting up in Intellij
+## Run
+- Download the provided jar (for example `aeolian.jar`) into your desired folder.
+- In terminal, go to that folder and run:
+```bash
+java -jar aeolian.jar
+```
 
-Prerequisites: JDK 17, update Intellij to the most recent version.
+## Storage
+- Tasks are saved to `./data/aeolian.txt`.
+- Data is saved when you enter `bye`.
 
-1. Open Intellij (if you are not in the welcome screen, click `File` > `Close Project` to close the existing project first)
-1. Open the project into Intellij as follows:
-   1. Click `Open`.
-   1. Select the project directory, and click `OK`.
-   1. If there are any further prompts, accept the defaults.
-1. Configure the project to use **JDK 17** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
-   In the same dialog, set the **Project language level** field to the `SDK default` option.
-1. After that, locate the `src/main/java/Aeolian.java` file, right-click it, and choose `Run Aeolian.main()` (if the code editor is showing compile errors, try restarting the IDE).
+## Chatbot Commands
 
-**Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+### `list`
+- Show all tasks.
+
+### `todo <description>`
+- Add a todo task.
+- Example: `todo read book`
+
+### `deadline <description> /by <yyyy-MM-dd>`
+- Add a deadline task.
+- Date must be in `yyyy-MM-dd`.
+- Example: `deadline return book /by 2026-03-01`
+
+### `event <description> /from <yyyy-MM-dd> /to <yyyy-MM-dd>`
+- Add an event task with start and end dates.
+- Dates must be in `yyyy-MM-dd`.
+- `from` date must be before or equal to `to` date.
+- Example: `event project meeting /from 2026-03-10 /to 2026-03-11`
+
+### `mark <index>`
+- Mark a task as done.
+- Example: `mark 1`
+
+### `unmark <index>`
+- Mark a task as not done.
+- Example: `unmark 1`
+
+### `delete <index>`
+- Delete a task.
+- Example: `delete 2`
+
+### `find <keyword>`
+- Find tasks containing the keyword.
+- Example: `find book`
+
+### `help`
+- Show command help.
+
+### `bye`
+- Save tasks and exit.
