@@ -53,7 +53,7 @@ public class MainWindow extends AnchorPane {
         );
         userInput.clear();
 
-        if (Parser.isByeCommand(input)) {
+        if (Parser.isByeCommand(input) && Ui.GOODBYE_MESSAGE.equals(response)) {
             Platform.exit();
         }
     }

@@ -6,6 +6,7 @@ import java.io.IOException;
  * Deals with output interactions with the user.
  */
 class Ui {
+    public static final String GOODBYE_MESSAGE = "Bye. Hope to see you again soon!";
 
     /**
      * Displays a greeting message to the user.
@@ -22,7 +23,7 @@ class Ui {
      * @return Goodbye message.
      */
     public String showGoodbye() {
-        return "Bye. Hope to see you again soon!";
+        return GOODBYE_MESSAGE;
     }
 
     /**

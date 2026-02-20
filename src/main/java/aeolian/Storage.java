@@ -98,7 +98,7 @@ class Storage {
                 fw.write(System.lineSeparator()); // add newline in cross-platform way
             }
         } catch (IOException e) {
-            System.out.println("Error writing tasks to file.");
+            throw new IOException("Failed to save tasks to " + filePath, e);
         }
     }
 
@@ -181,4 +181,3 @@ class Storage {
         return new Event(parts[2], parts[3], parts[4]);
     }
 }
-

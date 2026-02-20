@@ -8,9 +8,11 @@
   - `find` command boundary parsing (rejecting inputs like `findbook`).
   - Whitespace normalization across command dispatch and parser methods.
   - More robust parsing for `mark`/`unmark`/`delete` with flexible spaces.
-- Updated tests in `src/test/java/aeolian/ParserTest.java` and verified all tests pass.
+  - Storage save error propagation (no longer silently swallowed in save).
+  - Centralized goodbye text in `Ui` as a shared constant so UI and window exit check stay in sync.
+- Updated tests in `src/test/java/aeolian/` and verified all tests pass.
 
-## Production Methods Changed
+## Production Methods Changed by AI
 - `src/main/java/aeolian/Aeolian.java`: `processCommand(String input)`
 - `src/main/java/aeolian/Parser.java`: `isCommandWord(String userInput, String command)` (new)
 - `src/main/java/aeolian/Parser.java`: `isTask(String userInput)`
@@ -21,13 +23,15 @@
 - `src/main/java/aeolian/Parser.java`: `parseFindKeyword(String userInput)`
 - `src/main/java/aeolian/Parser.java`: `parseMarkUnmarkDelete(String userInput)`
 - `src/main/java/aeolian/Parser.java`: `parseTask(String userInput)`
+- `src/main/java/aeolian/Storage.java`: `saveTasksToFile(String filePath, TaskList tasks)`
+- `src/main/java/aeolian/MainWindow.java`: `handleUserInput()`
+- `src/main/java/aeolian/Ui.java`: `GOODBYE_MESSAGE` (new constant), `showGoodbye()`
 
 ## Interesting Observations
 - What worked:
-  - Existing test coverage was good and caught regressions quickly.
-  - Small, targeted parser changes plus tests were straightforward and safe.
+  - AI was able to quickly identify and fix bugs in the codebase.
+  - Wrote tests for many different cases quickly.
 - What did not work / friction:
   - Running Gradle tests required elevated access to `~/.gradle` in this environment.
-  - Some parser behavior looked correct at first glance but failed on edge whitespace/prefix cases.
 - Time saved (estimate):
   - Roughly 45-90 minutes versus fully manual investigation, patching, and validation.
